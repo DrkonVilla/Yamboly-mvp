@@ -1,0 +1,41 @@
+import express from 'express';
+import cors from 'cors';
+import { env } from './config/env';
+import { errorHandler } from './middleware/errorHandler';
+import authRoutes from './routes/auth.routes';
+import productRoutes from './routes/product.routes';
+import categoryRoutes from './routes/category.routes';
+import orderRoutes from './routes/order.routes';
+import dashboardRoutes from './routes/dashboard.routes';
+import reportRoutes from './routes/report.routes';
+
+const app = express();
+
+// Middlewares
+app.use(cors({ origin: env.CORS_ORIGIN }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Rutas
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/categories', categoryRoutes);
+app.use('/api/v1/orders', orderRoutes);
+app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/reports', reportRoutes);
+
+// Health check
+app.get('/api/v1/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Manejador de errores global (DEBE ir al final)
+app.use(errorHandler);
+
+// Iniciar servidor
+app.listen(env.PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${env.PORT}`);
+  console.log(`📡 API base: /api/v1`);
+  console.log(`🔐 Auth endpoints: /api/v1/auth`);
+});
+

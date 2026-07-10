@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: yamboly
+      POSTGRES_PASSWORD: yamboly123
+      POSTGRES_DB: yamboly_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://yamboly:yamboly123@db:5432/yamboly_db
+      JWT_SECRET: yamboly_mvp_super_secret_2026
+      CORS_ORIGIN: http://localhost:5173
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

@@ -1,0 +1,138 @@
+// schema.prisma
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS
+enum Rol {
+  admin
+  cliente
+}
+
+enum EstadoOrden {
+  pendiente
+  pagada
+  enviada
+  entregada
+  cancelada
+}
+
+enum Canal {
+  web
+  rappi
+  tottus
+  tambo
+  tiktok
+}
+
+// TABLAS
+model Usuario {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  nombre          String
+  apellido        String
+  contrasena_hash String
+  rol             Rol       @default(cliente)
+  activo          Boolean   @default(true)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  // Relaciones
+  carritos      Carrito[]
+  ordenes       Orden[]
+}
+
+model Categoria {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @unique
+  descripcion String?
+  activo      Boolean   @default(true)
+  created_at  DateTime  @default(now())
+
+  // Relaciones
+  productos Producto[]
+}
+
+model Producto {
+  id                Int       @id @default(autoincrement())
+  sku               String    @unique
+  nombre            String
+  descripcion_corta String
+  descripcion_larga String?
+  precio_venta      Float     // Incluye IGV
+  precio_oferta     Float?
+  categoria_id      Int
+  stock             Int       @default(0)
+  stock_minimo      Int       @default(5)
+  imagen_url        String?   // picsum.photos/seed/{sku}
+  activo            Boolean   @default(true)
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  // Relaciones
+  categoria         Categoria @relation(fields: [categoria_id], references: [id])
+  items_carrito     ItemsCarrito[]
+  items_orden       ItemsOrden[]
+}
+
+model Carrito {
+  id          Int       @id @default(autoincrement())
+  usuario_id  Int?      // Null si es invitado
+  session_id  String?   // UUID para invitados
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  // Relaciones
+  usuario     Usuario?       @relation(fields: [usuario_id], references: [id])
+  items       ItemsCarrito[]
+}
+
+model ItemsCarrito {
+  id              Int      @id @default(autoincrement())
+  carrito_id      Int
+  producto_id     Int
+  cantidad        Int      @default(1)
+  precio_unitario Float    // Copia del precio al agregar
+
+  // Relaciones
+  carrito         Carrito  @relation(fields: [carrito_id], references: [id])
+  producto        Producto @relation(fields: [producto_id], references: [id])
+}
+
+model Orden {
+  id                Int          @id @default(autoincrement())
+  usuario_id        Int
+  fecha             DateTime     @default(now())
+  estado            EstadoOrden  @default(pendiente)
+  canal             Canal        @default(web) // <<--- CAMPO CLAVE E-BUSINESS
+  subtotal          Float
+  impuestos         Float        @default(0) // Si ya incluye IGV, puede ser 0 o calculado
+  total             Float
+  direccion_envio   String
+  metodo_pago       String       // ej. "tarjeta", "contraentrega", "culqi"
+  created_at        DateTime     @default(now())
+  updated_at        DateTime     @updatedAt
+
+  // Relaciones
+  usuario           Usuario      @relation(fields: [usuario_id], references: [id])
+  items             ItemsOrden[]
+}
+
+model ItemsOrden {
+  id              Int      @id @default(autoincrement())
+  orden_id        Int
+  producto_id     Int
+  cantidad        Int
+  precio_unitario Float
+  descuento       Float    @default(0)
+
+  // Relaciones
+  orden           Orden    @relation(fields: [orden_id], references: [id])
+  producto        Producto @relation(fields: [producto_id], references: [id])
+}
