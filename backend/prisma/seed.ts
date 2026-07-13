@@ -274,8 +274,19 @@ async function main() {
   console.log(`✅ ${ordenesCreadas.length} órdenes creadas con canales: web=${30}, rappi=${10}, tottus=${5}, tambo=${5}`);
 
   // 6. Crear Proveedor e Insumos
+  const proveedorUser = await prisma.usuario.create({
+    data: {
+      email: 'proveedor@yamboly.com',
+      nombre: 'Juan',
+      apellido: 'Proveedor',
+      contrasena_hash: await bcrypt.hash('Admin2026!', 10),
+      rol: 'proveedor'
+    }
+  });
+
   const proveedor = await prisma.proveedor.create({
     data: {
+      usuario_id: proveedorUser.id,
       ruc: '10101010101',
       nombre: 'Proveedor Yámboly',
       contacto: 'Juan Proveedor',
