@@ -10,6 +10,9 @@ import dashboardRoutes from './routes/dashboard.routes';
 import reportRoutes from './routes/report.routes';
 import purchaseOrderRoutes from './routes/purchase-order.routes';
 import stockRoutes from './routes/stock.routes';
+import { prisma } from './config/db';
+import supplierRoutes from './routes/supplier.routes';
+import supplyRoutes from './routes/supply.routes';
 
 const app = express();
 
@@ -27,10 +30,29 @@ app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/reports', reportRoutes);
 app.use('/api/v1/purchase-orders', purchaseOrderRoutes);
 app.use('/api/v1/stock', stockRoutes);
+app.use('/api/v1/suppliers', supplierRoutes);
+app.use('/api/v1/supplies', supplyRoutes);
 
 // Health check
-app.get('/api/v1/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/v1/health', async (req, res) => {
+  try {
+    // Verificar conexión a base de datos
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({
+      status: 'ok',
+      db: 'connected',
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      db: 'disconnected',
+      error: error instanceof Error ? error.message : String(error),
+      timestamp: new Date().toISOString(),
+    });
+  }
 });
 
 // Manejador de errores global (DEBE ir al final)

@@ -23,6 +23,15 @@ const renderStars = (rating) => {
 
 const getBadge = (product) => {
   if (product.precio_oferta) return { text: 'Oferta', class: 'bg-yamboly-magenta text-white' };
+  if (product.created_at) {
+    const createdDate = new Date(product.created_at);
+    const today = new Date();
+    const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays <= 7) {
+      return { text: 'Nuevo', class: 'bg-green-600 text-white font-extrabold' };
+    }
+  }
   if (product.id % 7 === 0) return { text: 'Más vendido', class: 'bg-yamboly-yellow text-yamboly-purple' };
   if (product.id % 11 === 0) return { text: 'Nuevo', class: 'bg-yamboly-cyan text-white' };
   return null;
@@ -154,15 +163,25 @@ export const ProductDetail = () => {
               <div className="mb-6 p-3 bg-gray-50 rounded-xl border border-gray-100 inline-block">
                 <p className="text-xs text-yamboly-purple font-semibold">
                   Disponibilidad:{' '}
-                  <span className={product.stock < product.stock_minimo ? 'text-yamboly-magenta font-extrabold' : 'text-emerald-600 font-extrabold'}>
+                  <span className={product.stock <= product.stock_minimo ? 'text-yamboly-magenta font-extrabold' : 'text-emerald-600 font-extrabold'}>
                     {product.stock} unidades
                   </span>
                 </p>
-                {product.stock < product.stock_minimo && product.stock > 0 && (
-                  <p className="text-[10px] text-yamboly-magenta font-bold mt-1">⚠️ ¡Quedan pocas unidades!</p>
+                {product.stock < 10 && product.stock > 0 && (
+                  <div className="flex items-center gap-1.5 text-xs text-red-500 font-extrabold mt-1.5 animate-pulse">
+                    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>Solo quedan {product.stock} unidades</span>
+                  </div>
                 )}
                 {product.stock === 0 && (
-                  <p className="text-[10px] text-yamboly-magenta font-bold mt-1">❌ Producto agotado</p>
+                  <div className="flex items-center gap-1.5 text-xs text-red-500 font-extrabold mt-1.5">
+                    <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Agotado</span>
+                  </div>
                 )}
               </div>
             </div>
@@ -198,7 +217,7 @@ export const ProductDetail = () => {
                     : 'bg-yamboly-magenta text-white hover:bg-yamboly-magenta/90 hover:shadow-md'
                 }`}
               >
-                {product.stock === 0 ? 'Sin stock' : `Agregar al carrito (${quantity})`}
+                {product.stock === 0 ? 'Agotado' : `Agregar al carrito (${quantity})`}
               </button>
             </div>
           </div>
