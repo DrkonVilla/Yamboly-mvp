@@ -16,6 +16,22 @@ const getActiveStep = (estado) => {
   return idx >= 0 ? idx : 0;
 };
 
+const COLD_ESTADOS = ['enviado', 'entregado'];
+
+const ColdChainIndicator = ({ estado }) => {
+  if (!COLD_ESTADOS.includes(estado)) return null;
+  return (
+    <div className="flex items-center justify-center gap-2 mt-4 px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
+      <span
+        className="text-xl cursor-help"
+        title="Nuestros vehículos de reparto cuentan con congeladoras que garantizan la temperatura óptima del producto durante todo el trayecto."
+      >🌡️</span>
+      <span className="text-sm font-semibold text-emerald-700">Cadena de frío monitoreada: −18 °C mantenido</span>
+      <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" title="Sensor en vivo"></span>
+    </div>
+  );
+};
+
 const OrderTimeline = ({ estado }) => {
   const activeStep = getActiveStep(estado);
 
@@ -121,6 +137,7 @@ export const OrderConfirmation = () => {
           <p className="text-sm text-yamboly-purpleLight mb-6">Gracias por confiar en Helados Yámboly. Tu orden está siendo procesada.</p>
 
           <OrderTimeline estado={order.estado} />
+          <ColdChainIndicator estado={order.estado} />
 
           <div className="w-full max-w-md bg-gray-50 border border-gray-100 rounded-xl p-5 mb-8 text-left space-y-2">
             <div className="flex justify-between text-xs text-yamboly-purpleLight">

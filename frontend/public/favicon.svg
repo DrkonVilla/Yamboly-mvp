@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#E6007E"/>
+  <!-- Helado cono decorativo -->
+  <text x="32" y="44" font-family="Arial,sans-serif" font-size="36" font-weight="900"
+        fill="#FFD400" text-anchor="middle" dominant-baseline="middle">Y</text>
+</svg>

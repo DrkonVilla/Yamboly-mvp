@@ -14,11 +14,28 @@ import {
   Cell,
   LineChart,
   Line,
+  ReferenceArea,
 } from 'recharts';
 import { useAuthStore } from '../../stores/authStore';
 import toast from 'react-hot-toast';
 
 const COLORS = ['#29B6E8', '#E6007E', '#FFD400', '#4B2E83', '#7B5EA7'];
+
+// Datos estáticos de estacionalidad anual (verano: Dic–Mar = pico)
+const VENTAS_ESTACIONALES = [
+  { mes: 'Abr', total: 820 },
+  { mes: 'May', total: 640 },
+  { mes: 'Jun', total: 510 },
+  { mes: 'Jul', total: 480 },
+  { mes: 'Ago', total: 520 },
+  { mes: 'Sep', total: 600 },
+  { mes: 'Oct', total: 710 },
+  { mes: 'Nov', total: 890 },
+  { mes: 'Dic', total: 1740 },
+  { mes: 'Ene', total: 2150 },
+  { mes: 'Feb', total: 1980 },
+  { mes: 'Mar', total: 1560 },
+];
 
 let toastsShown = false;
 
@@ -244,6 +261,39 @@ export const DashboardPage = () => {
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
+        </div>
+
+        {/* Estacionalidad de Ventas (full-width) */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm lg:col-span-2">
+          <h3 className="font-baloo text-lg font-bold text-yamboly-purple mb-1">
+            📈 Estacionalidad de Ventas
+            <span className="ml-2 text-xs font-medium text-yamboly-purpleLight">(12 meses – Apr 2025 a Mar 2026)</span>
+          </h3>
+          <ResponsiveContainer width="100%" height={260}>
+            <LineChart data={VENTAS_ESTACIONALES} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `S/${v}`} />
+              <Tooltip formatter={(v) => [`S/ ${v}`, 'Ventas']} />
+              {/* Zona sombreada: campaña de verano */}
+              <ReferenceArea x1="Dic" x2="Mar" fill="#29B6E8" fillOpacity={0.12}
+                label={{ value: '☀️ Campaña Alta', position: 'insideTop', fontSize: 11, fill: '#4B2E83' }} />
+              <Line
+                type="monotone"
+                dataKey="total"
+                stroke="#E6007E"
+                strokeWidth={3}
+                dot={{ r: 4, fill: '#E6007E' }}
+                activeDot={{ r: 6 }}
+                name="Ventas (S/)"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+          <p className="text-xs text-gray-500 mt-3">
+            🌞 <strong>Diciembre–Marzo</strong> concentra el pico de campaña de verano, consistente con el
+            patrón estacional del mercado peruano de helados — dato clave para la planificación de
+            inventario, logística y estrategia omnicanal.
+          </p>
         </div>
       </div>
     </div>
