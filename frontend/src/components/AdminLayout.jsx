@@ -9,6 +9,8 @@ import {
   BuildingOffice2Icon,
   CubeIcon,
   DocumentTextIcon,
+  TruckIcon,
+  ArchiveBoxIcon,
 } from '@heroicons/react/24/outline';
 const adminMenuItems = [
   { path: '/admin', label: 'Dashboard', icon: ChartBarIcon, roles: ['admin'] },
@@ -22,8 +24,8 @@ const adminMenuItems = [
 ];
 
 const providerMenuItems = [
-  { path: '/provider', label: 'Panel Proveedor', icon: ChartBarIcon },
-  { path: '/provider/orders', label: 'Mis Órdenes', icon: ClipboardDocumentListIcon },
+  { path: '/provider', label: 'Panel Proveedor', icon: ChartBarIcon, roles: ['proveedor'] },
+  { path: '/provider/orders', label: 'Mis Órdenes', icon: ClipboardDocumentListIcon, roles: ['proveedor'] },
 ];
 
 export const AdminLayout = () => {
