@@ -13,8 +13,12 @@ services:
 
   backend:
     build: ./backend
+    command: npm run dev
     ports:
       - "3000:3000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
     environment:
       DATABASE_URL: postgresql://yamboly:yamboly123@db:5432/yamboly_db
       JWT_SECRET: yamboly_mvp_super_secret_2026

@@ -8,6 +8,8 @@ import categoryRoutes from './routes/category.routes';
 import orderRoutes from './routes/order.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import reportRoutes from './routes/report.routes';
+import purchaseOrderRoutes from './routes/purchase-order.routes';
+import stockRoutes from './routes/stock.routes';
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/reports', reportRoutes);
+app.use('/api/v1/purchase-orders', purchaseOrderRoutes);
+app.use('/api/v1/stock', stockRoutes);
 
 // Health check
 app.get('/api/v1/health', (req, res) => {

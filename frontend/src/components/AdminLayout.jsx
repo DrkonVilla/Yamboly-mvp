@@ -8,13 +8,20 @@ import {
   ChartBarIcon,
   ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
-import { DocumentTextIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon, TruckIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline';
 
-const menuItems = [
+const adminMenuItems = [
   { path: '/admin', label: 'Dashboard', icon: ChartBarIcon },
   { path: '/admin/products', label: 'Productos', icon: ShoppingBagIcon },
   { path: '/admin/orders', label: 'Órdenes', icon: ClipboardDocumentListIcon },
+  { path: '/admin/purchase-orders', label: 'Órdenes de Compra', icon: TruckIcon },
+  { path: '/admin/stock', label: 'Stock', icon: ArchiveBoxIcon },
   { path: '/admin/reports', label: 'Reportes', icon: DocumentTextIcon },
+];
+
+const providerMenuItems = [
+  { path: '/provider', label: 'Panel Proveedor', icon: ChartBarIcon },
+  { path: '/provider/orders', label: 'Mis Órdenes', icon: ClipboardDocumentListIcon },
 ];
 
 export const AdminLayout = () => {
@@ -22,8 +29,10 @@ export const AdminLayout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || user.rol !== 'admin') {
+    if (!user) {
       navigate('/login');
+    } else if (user.rol !== 'admin' && user.rol !== 'proveedor') {
+      navigate('/');
     }
   }, [user, navigate]);
 
@@ -32,9 +41,12 @@ export const AdminLayout = () => {
     navigate('/login');
   };
 
-  if (!user || user.rol !== 'admin') {
+  if (!user || (user.rol !== 'admin' && user.rol !== 'proveedor')) {
     return null;
   }
+
+  const isProvider = user.rol === 'proveedor';
+  const menuItems = isProvider ? providerMenuItems : adminMenuItems;
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -42,7 +54,9 @@ export const AdminLayout = () => {
       <aside className="w-64 bg-white shadow-md flex flex-col">
         <div className="p-4 border-b">
           <h1 className="font-baloo text-2xl font-extrabold text-yamboly-purple">Yámboly</h1>
-          <p className="text-xs text-yamboly-purpleLight font-medium">Panel de Administración</p>
+          <p className="text-xs text-yamboly-purpleLight font-medium">
+            {isProvider ? 'Portal de Proveedores' : 'Panel de Administración'}
+          </p>
         </div>
 
         <nav className="flex-1 p-4 space-y-1">

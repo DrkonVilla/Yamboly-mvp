@@ -21,8 +21,11 @@ import { DashboardPage } from './pages/admin/DashboardPage';
 import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminReports } from './pages/admin/AdminReports';
+import { AdminPurchaseOrders } from './pages/admin/AdminPurchaseOrders';
+import { AdminStock } from './pages/admin/AdminStock';
 
-
+import { ProviderDashboard } from './pages/provider/ProviderDashboard';
+import { ProviderOrders } from './pages/provider/ProviderOrders';
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuthStore();
   if (loading) return <div>Cargando...</div>;
@@ -69,6 +72,13 @@ function App() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="reports" element={<AdminReports />} />
+            <Route path="purchase-orders" element={<AdminPurchaseOrders />} />
+            <Route path="stock" element={<AdminStock />} />
+          </Route>
+          
+          <Route path="/provider" element={<AdminLayout />}>
+            <Route index element={<ProviderDashboard />} />
+            <Route path="orders" element={<ProviderOrders />} />
           </Route>
         </Routes>
       </main>
