@@ -18,9 +18,19 @@ services:
     environment:
       DATABASE_URL: postgresql://yamboly:yamboly123@db:5432/yamboly_db
       JWT_SECRET: yamboly_mvp_super_secret_2026
-      CORS_ORIGIN: http://localhost:5173
+      CORS_ORIGIN: http://localhost:80
     depends_on:
       - db
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:80/api/v1
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

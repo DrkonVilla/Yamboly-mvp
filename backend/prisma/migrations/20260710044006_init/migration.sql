@@ -46,6 +46,7 @@ CREATE TABLE "Producto" (
     "stock" INTEGER NOT NULL DEFAULT 0,
     "stock_minimo" INTEGER NOT NULL DEFAULT 5,
     "imagen_url" TEXT,
+    "rating" DOUBLE PRECISION NOT NULL DEFAULT 4.0,
     "activo" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,

@@ -2,12 +2,36 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useCartStore } from '../stores/cartStore';
+import { ImageGallery } from '../components/ImageGallery';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
+
+const STAR_FULL = '★';
+const STAR_EMPTY = '☆';
+
+const renderStars = (rating) => {
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5;
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    if (i < full) stars.push(STAR_FULL);
+    else if (i === full && half) stars.push('★');
+    else stars.push(STAR_EMPTY);
+  }
+  return stars.join('');
+};
+
+const getBadge = (product) => {
+  if (product.precio_oferta) return { text: 'Oferta', class: 'bg-yamboly-magenta text-white' };
+  if (product.id % 7 === 0) return { text: 'Más vendido', class: 'bg-yamboly-yellow text-yamboly-purple' };
+  if (product.id % 11 === 0) return { text: 'Nuevo', class: 'bg-yamboly-cyan text-white' };
+  return null;
+};
 
 export const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCartStore();
   const [quantity, setQuantity] = useState(1);
@@ -16,7 +40,15 @@ export const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         const res = await api.get(`/products/${id}`);
-        if (res.data.success) setProduct(res.data.data);
+        if (res.data.success) {
+          setProduct(res.data.data);
+          const relRes = await api.get('/products', {
+            params: { categoria_id: res.data.data.categoria_id, limit: 5 },
+          });
+          if (relRes.data.success) {
+            setRelatedProducts(relRes.data.data.filter((p) => p.id !== res.data.data.id).slice(0, 4));
+          }
+        }
       } catch (error) {
         console.error(error);
         toast.error('Producto no encontrado');
@@ -43,49 +75,58 @@ export const ProductDetail = () => {
   const hasOffer = !!product.precio_oferta;
   const activePrice = hasOffer ? product.precio_oferta : product.precio_venta;
   const regularPrice = hasOffer ? product.precio_venta : null;
+  const safePrice = (val) => (val ?? 0).toFixed(2);
+  const badge = getBadge(product);
 
   return (
     <div className="min-h-screen flex flex-col justify-between">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <Link to="/" className="text-yamboly-purple hover:text-yamboly-magenta font-bold mb-6 inline-block transition-colors">
-          ← Volver a la tienda
-        </Link>
+        <nav className="text-xs text-gray-400 mb-4 flex items-center gap-1">
+          <Link to="/" className="hover:text-yamboly-cyan transition-colors">Inicio</Link>
+          <span>/</span>
+          <span className="text-yamboly-purple/60">{product.categoria?.nombre || 'Helado'}</span>
+          <span>/</span>
+          <span className="text-yamboly-purple font-semibold truncate max-w-[200px]">{product.nombre}</span>
+        </nav>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
-          {/* Imagen */}
-          <div className="flex items-center justify-center bg-gray-50 rounded-xl overflow-hidden p-4">
-            <img
-              src={product.imagen_url || `https://picsum.photos/seed/${product.sku}/500/500`}
-              alt={product.nombre}
-              className="w-full max-h-[350px] object-cover rounded-xl shadow-sm hover:scale-102 transition-transform duration-300"
-            />
+          <div>
+            <div className="relative">
+              {badge && (
+                <span className={`absolute top-2 left-2 z-10 text-xs font-bold px-3 py-1 rounded-full uppercase shadow-sm ${badge.class}`}>
+                  {badge.text}
+                </span>
+              )}
+              <ImageGallery sku={product.sku} nombre={product.nombre} />
+            </div>
           </div>
 
-          {/* Detalle */}
           <div className="flex flex-col justify-between">
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-2">
                 <span className="bg-yamboly-cyan/15 text-yamboly-purple text-xs font-bold px-3 py-1 rounded-full">
                   {product.categoria?.nombre || 'Helado'}
                 </span>
-                <span className="text-xs text-yamboly-purpleLight font-medium">
-                  SKU: {product.sku}
-                </span>
+                <span className="text-xs text-yamboly-purpleLight font-medium">SKU: {product.sku}</span>
               </div>
-              <h1 className="font-baloo text-3xl font-extrabold text-yamboly-purple mb-4 leading-tight">
+
+              <h1 className="font-baloo text-3xl font-extrabold text-yamboly-purple mb-2 leading-tight">
                 {product.nombre}
               </h1>
 
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-3xl font-extrabold text-yamboly-purple">
-                  S/ {activePrice.toFixed(2)}
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-yamboly-yellow text-lg tracking-wider">
+                  {renderStars(product.rating || 4.0)}
                 </span>
-                {regularPrice && (
-                  <span className="text-sm text-gray-400 line-through">
-                    S/ {regularPrice.toFixed(2)}
-                  </span>
+                <span className="text-xs text-yamboly-purpleLight">({(product.rating || 4.0).toFixed(1)})</span>
+              </div>
+
+              <div className="flex items-baseline gap-2 mb-6">
+                <span className="text-3xl font-extrabold text-yamboly-purple">S/ {safePrice(activePrice)}</span>
+                {regularPrice != null && (
+                  <span className="text-sm text-gray-400 line-through">S/ {safePrice(regularPrice)}</span>
                 )}
-                <span className="text-xs text-gray-400 font-medium ml-1"> (Precio incluye IGV)</span>
+                <span className="text-xs text-gray-400 font-medium ml-1">(Precio incluye IGV)</span>
               </div>
 
               <p className="text-sm text-yamboly-purpleLight leading-relaxed mb-6">
@@ -94,16 +135,16 @@ export const ProductDetail = () => {
 
               <div className="mb-6 p-3 bg-gray-50 rounded-xl border border-gray-100 inline-block">
                 <p className="text-xs text-yamboly-purple font-semibold">
-                  Disponibilidad: {' '}
+                  Disponibilidad:{' '}
                   <span className={product.stock < product.stock_minimo ? 'text-yamboly-magenta font-extrabold' : 'text-emerald-600 font-extrabold'}>
                     {product.stock} unidades
                   </span>
                 </p>
                 {product.stock < product.stock_minimo && product.stock > 0 && (
-                  <p className="text-[10px] text-yamboly-magenta font-bold mt-1">⚠️ ¡Quedan pocas unidades en inventario!</p>
+                  <p className="text-[10px] text-yamboly-magenta font-bold mt-1">⚠️ ¡Quedan pocas unidades!</p>
                 )}
                 {product.stock === 0 && (
-                  <p className="text-[10px] text-yamboly-magenta font-bold mt-1">❌ Producto agotado temporalmente</p>
+                  <p className="text-[10px] text-yamboly-magenta font-bold mt-1">❌ Producto agotado</p>
                 )}
               </div>
             </div>
@@ -144,8 +185,35 @@ export const ProductDetail = () => {
             </div>
           </div>
         </div>
+
+        {relatedProducts.length > 0 && (
+          <div className="mt-12">
+            <h2 className="font-baloo text-2xl font-bold text-yamboly-purple mb-6">Productos Relacionados</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedProducts.map((rp) => (
+                <Link
+                  key={rp.id}
+                  to={`/product/${rp.id}`}
+                  className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-all group"
+                >
+                  <img
+                    src={rp.imagen_url || `https://picsum.photos/seed/${rp.sku}/200/200`}
+                    alt={rp.nombre}
+                    className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="p-3">
+                    <p className="font-baloo text-sm font-bold text-yamboly-purple truncate">{rp.nombre}</p>
+                    <p className="text-xs text-yamboly-purpleLight truncate">{rp.descripcion_corta}</p>
+                    <p className="text-sm font-extrabold text-yamboly-purple mt-1">
+                      S/ {safePrice(rp.precio_oferta || rp.precio_venta)}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-      <Footer />
     </div>
   );
 };

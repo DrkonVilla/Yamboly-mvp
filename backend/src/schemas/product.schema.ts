@@ -12,6 +12,7 @@ export const createProductSchema = z.object({
   stock_minimo: z.number().int().min(0).default(5),
   imagen_url: z.string().url('URL de imagen inválida').optional(),
   activo: z.boolean().default(true),
+  rating: z.number().min(0).max(5).optional(),
 });
 
 export const updateProductSchema = createProductSchema.partial().extend({

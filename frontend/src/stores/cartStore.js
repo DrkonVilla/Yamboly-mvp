@@ -91,6 +91,15 @@ export const useCartStore = create(
           precio_unitario: item.precio_unitario,
         }));
       },
+
+      getFreeShippingProgress: () => {
+        const { items } = get();
+        const total = items.reduce((sum, item) => sum + item.precio_unitario * item.cantidad, 0);
+        const threshold = 50;
+        const remaining = Math.max(0, threshold - total);
+        const percentage = Math.min(100, (total / threshold) * 100);
+        return { remaining, threshold, percentage };
+      },
     }),
     {
       name: 'cart-storage', // nombre en localStorage

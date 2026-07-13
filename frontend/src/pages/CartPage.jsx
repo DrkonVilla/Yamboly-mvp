@@ -3,6 +3,31 @@ import { Link } from 'react-router-dom';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Footer } from '../components/Footer';
 
+const ShippingProgressBar = ({ total }) => {
+  const threshold = 50;
+  const safe = total ?? 0;
+  const remaining = Math.max(0, threshold - safe);
+  const percentage = Math.min(100, (safe / threshold) * 100);
+  const isFree = safe >= threshold;
+
+  return (
+    <div className="mb-4 p-3 rounded-xl bg-gray-50 border border-gray-100">
+      <div className="flex justify-between text-xs mb-2">
+        <span className={isFree ? 'text-green-700 font-semibold' : 'text-yamboly-purple/70'}>
+          {isFree ? '✅ ¡Envío gratis desbloqueado!' : `¡Te faltan S/ ${Number.isFinite(remaining) ? remaining.toFixed(2) : '0.00'} para envío gratis!`}
+        </span>
+        <span className="font-bold text-yamboly-purple">{Number.isNaN(percentage) ? '0' : percentage.toFixed(0)}%</span>
+      </div>
+      <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${isFree ? 'bg-green-500' : 'bg-yamboly-cyan'}`}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+    </div>
+  );
+};
+
 export const CartPage = () => {
   const { items, removeItem, updateQuantity, getTotal, clearCart } = useCartStore();
   const total = getTotal();
@@ -48,7 +73,7 @@ export const CartPage = () => {
                 <div className="flex-1">
                   <h3 className="font-baloo text-base font-bold text-yamboly-purple">{item.nombre}</h3>
                   <p className="text-xs text-yamboly-purpleLight">SKU: {item.sku}</p>
-                  <p className="text-sm font-extrabold text-yamboly-purple mt-1">S/ {item.precio_unitario.toFixed(2)}</p>
+                  <p className="text-sm font-extrabold text-yamboly-purple mt-1">S/ {((item.precio_unitario ?? 0)).toFixed(2)}</p>
                 </div>
                 
                 <div className="flex items-center gap-2 mt-2 sm:mt-0">
@@ -95,11 +120,13 @@ export const CartPage = () => {
           {/* Resumen */}
           <div className="lg:w-80 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit">
             <h3 className="font-baloo text-lg font-bold mb-4 text-yamboly-purple">Resumen del Pedido</h3>
-            
+
+            <ShippingProgressBar total={total} />
+
             <div className="space-y-3 text-sm border-b pb-4 mb-4">
               <div className="flex justify-between text-yamboly-purple">
                 <span>Subtotal</span>
-                <span className="font-bold">S/ {total.toFixed(2)}</span>
+                <span className="font-bold">S/ {(total ?? 0).toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-xs text-yamboly-purpleLight">
                 <span>Envío</span>
@@ -110,7 +137,7 @@ export const CartPage = () => {
             <div>
               <div className="flex justify-between text-base font-extrabold text-yamboly-purple">
                 <span>Total</span>
-                <span>S/ {total.toFixed(2)}</span>
+                <span>S/ {(total ?? 0).toFixed(2)}</span>
               </div>
               <p className="text-[10px] text-gray-400 mt-1 font-medium">* Precios incluyen IGV (18%)</p>
             </div>

@@ -4,6 +4,86 @@ import api from '../api/axios';
 import { useAuthStore } from '../stores/authStore';
 import { Footer } from '../components/Footer';
 
+const STEPS = [
+  { key: 'pendiente', label: 'Pedido Recibido', icon: '📝' },
+  { key: 'pagado', label: 'Pago Confirmado', icon: '✅' },
+  { key: 'enviado', label: 'En camino', icon: '🚚' },
+  { key: 'entregado', label: 'Entregado', icon: '📦' },
+];
+
+const getActiveStep = (estado) => {
+  const idx = STEPS.findIndex((s) => s.key === estado);
+  return idx >= 0 ? idx : 0;
+};
+
+const OrderTimeline = ({ estado }) => {
+  const activeStep = getActiveStep(estado);
+
+  return (
+    <div className="w-full mb-8">
+      <div className="hidden sm:flex items-center justify-between">
+        {STEPS.map((step, i) => (
+          <div key={step.key} className="flex items-center flex-1 last:flex-none">
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                  i <= activeStep
+                    ? 'bg-yamboly-cyan text-white shadow-md'
+                    : 'bg-gray-200 text-gray-400'
+                }`}
+              >
+                {i < activeStep ? '✓' : step.icon}
+              </div>
+              <span
+                className={`text-xs mt-1 font-semibold ${
+                  i <= activeStep ? 'text-yamboly-purple' : 'text-gray-400'
+                }`}
+              >
+                {step.label}
+              </span>
+            </div>
+            {i < STEPS.length - 1 && (
+              <div
+                className={`flex-1 h-0.5 mx-2 ${
+                  i < activeStep ? 'bg-yamboly-cyan' : 'bg-gray-200'
+                }`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="sm:hidden space-y-3">
+        {STEPS.map((step, i) => (
+          <div key={step.key} className="flex items-center gap-3">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                i <= activeStep
+                  ? 'bg-yamboly-cyan text-white'
+                  : 'bg-gray-200 text-gray-400'
+              }`}
+            >
+              {i < activeStep ? '✓' : step.icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p
+                className={`text-xs font-semibold ${
+                  i <= activeStep ? 'text-yamboly-purple' : 'text-gray-400'
+                }`}
+              >
+                {step.label}
+              </p>
+            </div>
+            {i < activeStep && (
+              <div className="w-0.5 h-6 bg-yamboly-cyan absolute left-4" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const OrderConfirmation = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
@@ -36,10 +116,12 @@ export const OrderConfirmation = () => {
           <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-6">
             <span className="text-4xl animate-bounce">🎉</span>
           </div>
-          
+
           <h1 className="font-baloo text-3xl font-extrabold text-yamboly-purple mb-2">¡Pedido Confirmado con Éxito!</h1>
           <p className="text-sm text-yamboly-purpleLight mb-6">Gracias por confiar en Helados Yámboly. Tu orden está siendo procesada.</p>
-          
+
+          <OrderTimeline estado={order.estado} />
+
           <div className="w-full max-w-md bg-gray-50 border border-gray-100 rounded-xl p-5 mb-8 text-left space-y-2">
             <div className="flex justify-between text-xs text-yamboly-purpleLight">
               <span>Nro. de Pedido:</span>
@@ -47,7 +129,7 @@ export const OrderConfirmation = () => {
             </div>
             <div className="flex justify-between text-xs text-yamboly-purpleLight">
               <span>Total Pagado:</span>
-              <span className="font-bold text-yamboly-purple">S/ {order.total.toFixed(2)}</span>
+              <span className="font-bold text-yamboly-purple">S/ {(order.total ?? 0).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xs text-yamboly-purpleLight">
               <span>Estado del Pago:</span>

@@ -80,9 +80,6 @@ export const generateOrdersReport = async (res: Response, startDateStr?: string,
   doc.pipe(res);
 
   // Encabezado
-  const subtitle = startDate || endDate
-    ? `Período: ${startDate || 'inicio'} - ${endDate || 'hoy'}`
-    : 'Todas las órdenes';
   addHeader(doc, '📋 REPORTE DE ÓRDENES', subtitle);
 
   // Tabla de órdenes

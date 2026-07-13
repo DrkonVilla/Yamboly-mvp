@@ -95,6 +95,7 @@ async function main() {
         descripcion_larga: `Delicioso helado Yámboly - ${p.nombre}`,
         precio_venta: p.precio_venta,
         precio_oferta: Math.random() > 0.8 ? p.precio_venta * 0.85 : null, // 20% con oferta
+        rating: parseFloat((Math.random() * 1.5 + 3.5).toFixed(1)),
         categoria_id: categoriaId,
         stock: Math.floor(Math.random() * 80) + 20, // 20 a 100 unidades
         stock_minimo: 10,
