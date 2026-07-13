@@ -33,6 +33,23 @@ enum Canal {
   tiktok
 }
 
+enum EstadoCompra {
+  pendiente
+  aprobada
+  recibida
+  cancelada
+  solicitado
+  aprobado
+  recibido
+  cancelado
+}
+
+enum TipoMovimientoStock {
+  entrada_compra
+  salida_venta
+  ajuste_manual
+}
+
 // TABLAS
 model Usuario {
   id              Int       @id @default(autoincrement())
@@ -46,8 +63,11 @@ model Usuario {
   updated_at      DateTime  @updatedAt
 
   // Relaciones
-  carritos      Carrito[]
-  ordenes       Orden[]
+  carritos          Carrito[]
+  ordenes           Orden[]
+  ordenes_compra    OrdenCompra[]
+  movimientos_stock MovimientoStock[]
+  proveedor         Proveedor?
 }
 
 model Categoria {
@@ -82,6 +102,7 @@ model Producto {
   categoria         Categoria @relation(fields: [categoria_id], references: [id])
   items_carrito     ItemsCarrito[]
   items_orden       ItemsOrden[]
+  movimientos_stock MovimientoStock[]
 }
 
 model Carrito {
@@ -140,76 +161,90 @@ model ItemsOrden {
   producto        Producto @relation(fields: [producto_id], references: [id])
 }
 
-enum EstadoCompra {
-  solicitado
-  aprobado
-  recibido
-  cancelado
-}
-
 model Proveedor {
-  id          Int          @id @default(autoincrement())
-  ruc         String       @unique
+  id          Int       @id @default(autoincrement())
+  usuario_id  Int?      @unique
+  ruc         String    @unique
   nombre      String
-  contacto    String
-  telefono    String
-  email       String
-  direccion   String
-  activo      Boolean      @default(true)
-  created_at  DateTime     @default(now())
-  updated_at  DateTime     @updatedAt
+  contacto    String?
+  telefono    String?
+  email       String?
+  direccion   String?
+  activo      Boolean   @default(true)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 
-  // Relaciones
+  usuario     Usuario?  @relation(fields: [usuario_id], references: [id])
+  ordenes     OrdenCompra[]
   insumos     Insumo[]
-  compras     OrdenCompra[]
 }
 
 model Insumo {
-  id             Int                 @id @default(autoincrement())
-  proveedor_id   Int
-  nombre         String
-  descripcion    String?
-  unidad_medida  String
-  precio_unit    Float
-  stock_actual   Float               @default(0)
-  stock_minimo   Float               @default(0)
-  activo         Boolean             @default(true)
-  created_at     DateTime            @default(now())
-  updated_at     DateTime            @updatedAt
+  id            Int       @id @default(autoincrement())
+  proveedor_id  Int
+  nombre        String
+  descripcion   String?
+  unidad_medida String    @default("kg")
+  precio_unit   Float     @default(0)
+  stock_actual  Float     @default(0)
+  stock_minimo  Float     @default(0)
+  activo        Boolean   @default(true)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
 
-  // Relaciones
-  proveedor      Proveedor           @relation(fields: [proveedor_id], references: [id])
-  items_compra   ItemsOrdenCompra[]
-  movimientos    MovimientoStock[]
+  proveedor     Proveedor @relation(fields: [proveedor_id], references: [id])
+  items_orden   ItemsOrdenCompra[]
+  movimientos   MovimientoInsumo[]
 }
 
 model OrdenCompra {
-  id              Int                 @id @default(autoincrement())
-  proveedor_id    Int
-  fecha           DateTime            @default(now())
-  estado          EstadoCompra        @default(solicitado)
-  total           Float
-  created_at      DateTime            @default(now())
-  updated_at      DateTime            @updatedAt
+  id             Int       @id @default(autoincrement())
+  proveedor_id   Int
+  usuario_id     Int?
+  estado         EstadoCompra @default(pendiente)
+  fecha          DateTime?    @default(now())
+  subtotal       Float?
+  impuestos      Float?
+  total          Float
+  fecha_entrega  DateTime?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
 
-  // Relaciones
-  proveedor       Proveedor           @relation(fields: [proveedor_id], references: [id])
-  items           ItemsOrdenCompra[]
+  proveedor      Proveedor @relation(fields: [proveedor_id], references: [id])
+  usuario        Usuario?  @relation(fields: [usuario_id], references: [id])
+  items          ItemsOrdenCompra[]
 }
 
 model ItemsOrdenCompra {
-  id              Int                 @id @default(autoincrement())
-  orden_compra_id Int
-  insumo_id       Int
-  cantidad        Float
-  precio_unit     Float
+  id               Int       @id @default(autoincrement())
+  orden_compra_id  Int
+  insumo_id        Int
+  cantidad         Float
+  precio_unit      Float?    // Added from their model
+  precio_unitario  Float     // Mine
+  subtotal         Float?
 
-  // Relaciones
-  orden_compra    OrdenCompra         @relation(fields: [orden_compra_id], references: [id])
-  insumo          Insumo              @relation(fields: [insumo_id], references: [id])
+  orden_compra     OrdenCompra @relation(fields: [orden_compra_id], references: [id])
+  insumo           Insumo      @relation(fields: [insumo_id], references: [id])
 }
 
 model MovimientoStock {
+  id               Int       @id @default(autoincrement())
+  producto_id      Int
+  tipo             TipoMovimientoStock
+  cantidad         Int
+  stock_anterior   Int
+  stock_nuevo      Int
+  referencia_id    Int?
+  referencia_tipo  String?
+  usuario_id       Int?
+  created_at       DateTime  @default(now())
+
+  producto         Producto  @relation(fields: [producto_id], references: [id])
+  usuario          Usuario?  @relation(fields: [usuario_id], references: [id])
+}
+
+model MovimientoInsumo {
   id              Int                 @id @default(autoincrement())
   insumo_id       Int
   tipo            String

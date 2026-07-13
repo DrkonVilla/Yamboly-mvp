@@ -10,14 +10,20 @@ import {
   CubeIcon,
   DocumentTextIcon,
 } from '@heroicons/react/24/outline';
-
-const menuItems = [
+const adminMenuItems = [
   { path: '/admin', label: 'Dashboard', icon: ChartBarIcon, roles: ['admin'] },
   { path: '/admin/products', label: 'Productos', icon: ShoppingBagIcon, roles: ['admin', 'ejecutivo'] },
   { path: '/admin/orders', label: 'Órdenes', icon: ClipboardDocumentListIcon, roles: ['admin'] },
+  { path: '/admin/purchase-orders', label: 'Órdenes de Compra', icon: TruckIcon, roles: ['admin', 'ejecutivo'] },
+  { path: '/admin/stock', label: 'Stock', icon: ArchiveBoxIcon, roles: ['admin', 'ejecutivo'] },
   { path: '/admin/reports', label: 'Reportes', icon: DocumentTextIcon, roles: ['admin'] },
   { path: '/admin/suppliers', label: 'Proveedores', icon: BuildingOffice2Icon, roles: ['admin', 'ejecutivo'] },
   { path: '/admin/supplies', label: 'Insumos', icon: CubeIcon, roles: ['admin', 'ejecutivo'] },
+];
+
+const providerMenuItems = [
+  { path: '/provider', label: 'Panel Proveedor', icon: ChartBarIcon },
+  { path: '/provider/orders', label: 'Mis Órdenes', icon: ClipboardDocumentListIcon },
 ];
 
 export const AdminLayout = () => {
@@ -25,8 +31,10 @@ export const AdminLayout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || (user.rol !== 'admin' && user.rol !== 'ejecutivo')) {
+    if (!user) {
       navigate('/login');
+    } else if (user.rol !== 'admin' && user.rol !== 'proveedor' && user.rol !== 'ejecutivo') {
+      navigate('/');
     }
   }, [user, navigate]);
 
@@ -35,9 +43,12 @@ export const AdminLayout = () => {
     navigate('/login');
   };
 
-  if (!user || (user.rol !== 'admin' && user.rol !== 'ejecutivo')) {
+  if (!user || (user.rol !== 'admin' && user.rol !== 'proveedor' && user.rol !== 'ejecutivo')) {
     return null;
   }
+
+  const isProvider = user.rol === 'proveedor';
+  const menuItems = isProvider ? providerMenuItems : adminMenuItems.filter(item => item.roles?.includes(user.rol));
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -45,7 +56,9 @@ export const AdminLayout = () => {
       <aside className="w-64 bg-white shadow-md flex flex-col">
         <div className="p-4 border-b">
           <h1 className="font-baloo text-2xl font-extrabold text-yamboly-purple">Yámboly</h1>
-          <p className="text-xs text-yamboly-purpleLight font-medium">Panel de Administración</p>
+          <p className="text-xs text-yamboly-purpleLight font-medium">
+            {isProvider ? 'Portal de Proveedores' : 'Panel de Administración'}
+          </p>
         </div>
 
         <nav className="flex-1 p-4 space-y-1">

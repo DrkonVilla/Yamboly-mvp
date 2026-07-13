@@ -12,6 +12,7 @@ const STEPS = [
 ];
 
 const getActiveStep = (estado) => {
+  if (estado === 'cancelada') return -1;
   const idx = STEPS.findIndex((s) => s.key === estado);
   return idx >= 0 ? idx : 0;
 };
@@ -33,6 +34,23 @@ const ColdChainIndicator = ({ estado }) => {
 };
 
 const OrderTimeline = ({ estado }) => {
+  if (estado === 'cancelada') {
+    return (
+      <div className="w-full mb-8">
+        <div className="flex items-center justify-center">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold bg-red-500 text-white shadow-md">
+              ✕
+            </div>
+            <span className="text-sm mt-2 font-bold text-red-600">
+              Pedido Cancelado
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const activeStep = getActiveStep(estado);
 
   return (
@@ -100,11 +118,14 @@ const OrderTimeline = ({ estado }) => {
   );
 };
 
+import { useCartStore } from '../stores/cartStore';
+
 export const OrderConfirmation = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuthStore();
+  const { addItem } = useCartStore();
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -133,8 +154,12 @@ export const OrderConfirmation = () => {
             <span className="text-4xl animate-bounce">🎉</span>
           </div>
 
-          <h1 className="font-baloo text-3xl font-extrabold text-yamboly-purple mb-2">¡Pedido Confirmado con Éxito!</h1>
-          <p className="text-sm text-yamboly-purpleLight mb-6">Gracias por confiar en Helados Yámboly. Tu orden está siendo procesada.</p>
+          <h1 className="font-baloo text-3xl font-extrabold text-yamboly-purple mb-2">
+            {order.estado === 'cancelada' ? 'Pedido Cancelado' : '¡Pedido Confirmado con Éxito!'}
+          </h1>
+          {order.estado !== 'cancelada' && (
+            <p className="text-sm text-yamboly-purpleLight mb-6">Gracias por confiar en Helados Yámboly. Tu orden está siendo procesada.</p>
+          )}
 
           <OrderTimeline estado={order.estado} />
           <ColdChainIndicator estado={order.estado} />
@@ -159,7 +184,14 @@ export const OrderConfirmation = () => {
             </div>
             <div className="flex justify-between text-xs text-yamboly-purpleLight">
               <span>Método de Pago:</span>
-              <span className="font-bold text-yamboly-purple capitalize">{order.metodo_pago}</span>
+              <span className="font-bold text-yamboly-purple capitalize flex items-center gap-1">
+                {order.metodo_pago === 'tarjeta' && '💳'}
+                {order.metodo_pago === 'contraentrega' && '💵'}
+                {order.metodo_pago === 'culqi' && '💳'}
+                {order.metodo_pago === 'yape' && '📱'}
+                {order.metodo_pago === 'plin' && '📱'}
+                {order.metodo_pago}
+              </span>
             </div>
             <div className="flex justify-between text-xs text-yamboly-purpleLight">
               <span>Canal de Venta:</span>
@@ -175,12 +207,26 @@ export const OrderConfirmation = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
-            <Link
-              to="/"
-              className="bg-yamboly-magenta text-white font-bold px-6 py-2.5 rounded-xl shadow hover:bg-yamboly-magenta/90 transition-all text-sm transform active:scale-95 text-center"
-            >
-              Volver a la Tienda
-            </Link>
+            {order.estado === 'cancelada' ? (
+              <button
+                onClick={() => {
+                  order.items?.forEach(item => {
+                    addItem({ ...item.producto, id: item.producto_id }, item.cantidad);
+                  });
+                  window.location.href = '/cart';
+                }}
+                className="bg-yamboly-magenta text-white font-bold px-6 py-2.5 rounded-xl shadow hover:bg-yamboly-magenta/90 transition-all text-sm transform active:scale-95 text-center flex items-center justify-center gap-2"
+              >
+                <span>🔄</span> Volver a comprar
+              </button>
+            ) : (
+              <Link
+                to="/"
+                className="bg-yamboly-magenta text-white font-bold px-6 py-2.5 rounded-xl shadow hover:bg-yamboly-magenta/90 transition-all text-sm transform active:scale-95 text-center"
+              >
+                Volver a la Tienda
+              </Link>
+            )}
             {user?.rol === 'admin' && (
               <Link
                 to="/admin/orders"

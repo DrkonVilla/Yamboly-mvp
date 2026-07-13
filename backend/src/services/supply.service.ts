@@ -110,7 +110,7 @@ export const adjustStock = async (
     }
 
     // 3. Crear movimiento de stock
-    await tx.movimientoStock.create({
+    await tx.movimientoInsumo.create({
       data: {
         insumo_id: id,
         tipo: data.tipo,

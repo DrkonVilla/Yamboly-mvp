@@ -175,102 +175,132 @@ export const HomePage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-between">
+    <div className="min-h-screen flex flex-col justify-between font-sans">
       <div>
-        <div className="relative bg-gradient-to-r from-yamboly-cyan to-yamboly-cyanLight pt-16 pb-24 text-white overflow-hidden">
-          <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
-            <div className="flex-1 text-center md:text-left max-w-xl">
-              <span className="bg-yamboly-yellow text-yamboly-purple text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                🍦 Campaña de Verano Yámboly
+        {/* Premium Banner Section */}
+        <div className="relative pt-20 pb-32 overflow-hidden bg-white">
+          <div className="absolute inset-0 z-0">
+            {/* Animated modern background gradient */}
+            <div className="absolute top-0 -left-1/4 w-3/4 h-full bg-gradient-to-br from-yamboly-cyan/20 to-transparent rounded-full blur-3xl opacity-60 mix-blend-multiply animate-blob"></div>
+            <div className="absolute top-0 -right-1/4 w-3/4 h-full bg-gradient-to-bl from-yamboly-magenta/20 to-transparent rounded-full blur-3xl opacity-60 mix-blend-multiply animate-blob animation-delay-2000"></div>
+            <div className="absolute -bottom-32 left-1/4 w-1/2 h-1/2 bg-gradient-to-t from-yamboly-yellow/20 to-transparent rounded-full blur-3xl opacity-60 mix-blend-multiply animate-blob animation-delay-4000"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
+            <div className="flex-1 text-center md:text-left max-w-xl xl:max-w-2xl">
+              <span className="inline-flex items-center bg-white/60 backdrop-blur-md border border-white/80 text-yamboly-magenta text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_4px_12px_rgba(0,0,0,0.05)] mb-6">
+                <span className="w-2 h-2 rounded-full bg-yamboly-magenta animate-pulse mr-2"></span>
+                Novedades de Verano
               </span>
-              <h1 className="font-baloo text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-wide mt-4 mb-4 drop-shadow-md text-yamboly-purple leading-tight">
-                ¡Sabor y diversión para todo el Perú!
+              <h1 className="font-baloo text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mt-2 mb-6 text-slate-800 leading-[1.1]">
+                Sabor premium que <span className="text-transparent bg-clip-text bg-gradient-to-r from-yamboly-magenta to-yamboly-cyan drop-shadow-sm">enamora al Perú</span>
               </h1>
-              <p className="text-sm md:text-base text-yamboly-purple font-medium opacity-90 mb-6 max-w-lg">
-                Helados 100% peruanos hechos para compartir los mejores momentos en familia.
+              <p className="text-base md:text-lg text-slate-600 font-medium mb-8 max-w-lg leading-relaxed">
+                Descubre nuestra selección de helados artesanales elaborados con los mejores ingredientes, directamente a tu hogar.
               </p>
-              <a
-                href="#catalogo"
-                className="inline-block bg-yamboly-magenta text-white font-bold px-6 py-3 rounded-full shadow hover:bg-yamboly-magenta/90 transform hover:scale-105 transition-all text-sm"
-              >
-                Ver Catálogo
-              </a>
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
+                <a
+                  href="#catalogo"
+                  className="w-full sm:w-auto bg-yamboly-magenta text-white font-bold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl hover:bg-yamboly-magenta/90 transform hover:-translate-y-1 transition-all duration-300 text-sm tracking-wide"
+                >
+                  Ver Catálogo Completo
+                </a>
+                <a
+                  href="/nosotros"
+                  className="w-full sm:w-auto bg-white text-slate-800 font-bold px-8 py-3.5 rounded-full shadow-md hover:shadow-lg border border-slate-100 hover:border-slate-200 transform hover:-translate-y-1 transition-all duration-300 text-sm tracking-wide"
+                >
+                  Conoce nuestra historia
+                </a>
+              </div>
             </div>
-            <div className="flex-1 flex justify-center relative">
-              <div className="w-64 h-64 md:w-80 md:h-80 bg-white/30 rounded-full flex items-center justify-center backdrop-blur-sm p-6 shadow-inner animate-pulse">
-                <img src="/logo.png" alt="Yámboly" className="w-auto h-40 md:h-52 drop-shadow-xl select-none" />
+            
+            <div className="flex-1 flex justify-center relative w-full">
+              <div className="relative w-72 h-72 md:w-96 md:h-96">
+                {/* Decorative Elements around main image */}
+                <div className="absolute inset-0 bg-gradient-to-br from-yamboly-cyan/10 to-yamboly-magenta/10 rounded-full animate-spin-slow"></div>
+                <div className="absolute inset-4 bg-white/40 backdrop-blur-xl rounded-full shadow-2xl border border-white/50"></div>
+                
+                {/* Floating Badges */}
+                <div className="absolute -left-6 top-1/4 bg-white p-3 rounded-2xl shadow-xl border border-white/60 animate-bounce-slow" style={{animationDelay: '0s'}}>
+                  <span className="text-2xl">🍦</span>
+                </div>
+                <div className="absolute -right-4 top-1/3 bg-white p-3 rounded-2xl shadow-xl border border-white/60 animate-bounce-slow" style={{animationDelay: '1s'}}>
+                  <span className="text-2xl">🍓</span>
+                </div>
+                <div className="absolute left-1/4 -bottom-6 bg-white p-3 rounded-2xl shadow-xl border border-white/60 animate-bounce-slow" style={{animationDelay: '2s'}}>
+                  <span className="text-2xl">🍫</span>
+                </div>
+
+                <div className="absolute inset-0 flex items-center justify-center p-8 transform hover:scale-105 transition-transform duration-500">
+                  <img src="/logo.png" alt="Yámboly Premium" className="w-auto h-48 md:h-64 drop-shadow-[0_20px_30px_rgba(0,0,0,0.15)] select-none" />
+                </div>
               </div>
             </div>
           </div>
-          <WaveDivider fill="fill-[#FAF9F6]" className="absolute bottom-0 left-0 w-full" />
         </div>
 
-        {/* Franja de Estadísticas Animadas */}
-        <div className="bg-white py-10 border-b border-gray-100 shadow-sm relative z-20 mt-[-10px]">
-          <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:shadow-sm transition-all">
-              <p className="text-3xl md:text-4xl font-extrabold text-yamboly-magenta">
-                <CountUp end={500} suffix="+" />
-              </p>
-              <p className="text-xs font-bold text-yamboly-purple uppercase tracking-wider mt-2">Pedidos Entregados</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:shadow-sm transition-all">
-              <p className="text-3xl md:text-4xl font-extrabold text-yamboly-magenta">
-                <CountUp end={7} />
-              </p>
-              <p className="text-xs font-bold text-yamboly-purple uppercase tracking-wider mt-2">Ciudades con Cobertura</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:shadow-sm transition-all">
-              <p className="text-3xl md:text-4xl font-extrabold text-yamboly-magenta">
-                <CountUp end={20} suffix="+" />
-              </p>
-              <p className="text-xs font-bold text-yamboly-purple uppercase tracking-wider mt-2">Sabores Disponibles</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:shadow-sm transition-all">
-              <p className="text-3xl md:text-4xl font-extrabold text-yamboly-magenta">
-                <CountUp end={15} suffix=" años" />
-              </p>
-              <p className="text-xs font-bold text-yamboly-purple uppercase tracking-wider mt-2">Trayectoria de Calidad</p>
+        {/* Premium Stats Section */}
+        <div className="bg-slate-50 relative z-20 pt-8 pb-16">
+          <div className="container mx-auto px-4 -mt-16">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
+              {[
+                { count: 500, label: 'Pedidos Entregados', suffix: '+', color: 'from-blue-500 to-cyan-400', icon: '🚚' },
+                { count: 7, label: 'Ciudades Cobertura', suffix: '', color: 'from-yamboly-magenta to-pink-400', icon: '🗺️' },
+                { count: 20, label: 'Sabores Únicos', suffix: '+', color: 'from-orange-400 to-yamboly-yellow', icon: '✨' },
+                { count: 15, label: 'Años de Calidad', suffix: ' años', color: 'from-purple-500 to-indigo-400', icon: '🏆' },
+              ].map((stat, idx) => (
+                <div key={idx} className="bg-white p-6 md:p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 group">
+                  <div className="text-3xl mb-3 opacity-80 group-hover:scale-110 transition-transform duration-300">{stat.icon}</div>
+                  <p className={`text-3xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${stat.color}`}>
+                    <CountUp end={stat.count} suffix={stat.suffix} />
+                  </p>
+                  <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mt-3">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        <div id="catalogo" className="container mx-auto px-4 py-8">
-          <div className="text-center mb-8">
-            <h2 className="font-baloo text-3xl font-bold text-yamboly-purple">Explora Nuestro Catálogo</h2>
-            <p className="text-sm text-yamboly-purpleLight mt-1">Frescura y calidad directamente a tu mesa</p>
+        {/* Catalog Section */}
+        <div id="catalogo" className="container mx-auto px-4 py-16">
+          <div className="text-center mb-12 max-w-2xl mx-auto">
+            <h2 className="font-baloo text-4xl md:text-5xl font-extrabold text-slate-800 mb-4 tracking-tight">Nuestra Colección</h2>
+            <div className="h-1.5 w-24 bg-gradient-to-r from-yamboly-cyan to-yamboly-magenta rounded-full mx-auto mb-6"></div>
+            <p className="text-slate-500">Selecciona entre nuestra variedad de postres helados, elaborados con pasión para brindar la mejor experiencia en cada bocado.</p>
           </div>
 
-          <div className="flex md:hidden mb-4 gap-2">
+          <div className="flex md:hidden mb-6 gap-2">
             <div className="relative flex-1">
               <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder="Encuentra tu sabor favorito..."
                 value={filters.search}
                 onChange={(e) => updateURL({ ...filters, search: e.target.value })}
-                className="w-full border border-yamboly-purpleLight/30 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yamboly-cyan bg-white text-yamboly-purple"
+                className="w-full bg-slate-50 border-0 shadow-inner rounded-full px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yamboly-cyan text-slate-700"
               />
             </div>
             <button
               onClick={() => setMobileFilterOpen(true)}
-              className="bg-yamboly-cyan text-white px-4 py-2 rounded-xl text-sm font-bold"
+              className="bg-slate-800 text-white px-5 py-3 rounded-full text-sm font-bold shadow-md"
             >
               Filtros
             </button>
           </div>
 
-          <div className="flex gap-6">
-            <aside className="hidden md:block w-64 shrink-0">
-              <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm sticky top-24">
-                <div className="mb-4">
+          <div className="flex gap-8">
+            <aside className="hidden md:block w-72 shrink-0">
+              <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] sticky top-24">
+                <div className="mb-6 relative">
+                  <span className="absolute left-4 top-3 text-slate-400">🔍</span>
                   <input
                     type="text"
-                    placeholder="Buscar productos..."
+                    placeholder="Buscar helados..."
                     value={filters.search}
                     onChange={(e) => updateURL({ ...filters, search: e.target.value })}
-                    className="w-full border border-yamboly-purpleLight/30 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yamboly-cyan bg-white text-yamboly-purple"
+                    className="w-full bg-slate-50 border-0 shadow-inner rounded-2xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yamboly-cyan text-slate-700 placeholder-slate-400"
                   />
                 </div>
+                <div className="h-px w-full bg-slate-100 mb-6"></div>
                 <FilterPanel
                   categorias={categories}
                   filters={filters}
@@ -281,130 +311,159 @@ export const HomePage = () => {
 
             <div className="flex-1 min-w-0">
               {hasActiveFilters && (
-                <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <span className="text-xs text-yamboly-purple/60 font-medium">{sortedProducts.length} productos encontrados</span>
-                  <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-col gap-3 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-500 font-medium">Filtros aplicados:</span>
+                    <button onClick={clearFilters} className="text-xs text-yamboly-magenta font-bold hover:text-yamboly-magenta/80 transition-colors">
+                      Limpiar todos
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
                     {filters.categoria_ids.map((id) => {
                       const cat = categories.find((c) => c.id === id);
                       return (
-                        <span key={`cat-${id}`} className="inline-flex items-center gap-1 bg-yamboly-cyan/10 text-yamboly-purple text-xs px-2 py-1 rounded-full">
-                          {cat?.nombre || id} <button onClick={() => removeFilter('categoria_ids', id)} className="hover:text-yamboly-magenta font-bold">&times;</button>
+                        <span key={`cat-${id}`} className="inline-flex items-center gap-1.5 bg-white shadow-sm border border-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-full font-medium">
+                          {cat?.nombre || id} <button onClick={() => removeFilter('categoria_ids', id)} className="text-slate-400 hover:text-red-500 transition-colors">&times;</button>
                         </span>
                       );
                     })}
                     {filters.minPrice > 0 && (
-                      <span className="inline-flex items-center gap-1 bg-yamboly-cyan/10 text-yamboly-purple text-xs px-2 py-1 rounded-full">
-                        Desde S/{filters.minPrice} <button onClick={() => removeFilter('minPrice')} className="hover:text-yamboly-magenta font-bold">&times;</button>
+                      <span className="inline-flex items-center gap-1.5 bg-white shadow-sm border border-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-full font-medium">
+                        Desde S/{filters.minPrice} <button onClick={() => removeFilter('minPrice')} className="text-slate-400 hover:text-red-500 transition-colors">&times;</button>
                       </span>
                     )}
                     {filters.maxPrice < 50 && (
-                      <span className="inline-flex items-center gap-1 bg-yamboly-cyan/10 text-yamboly-purple text-xs px-2 py-1 rounded-full">
-                        Hasta S/{filters.maxPrice} <button onClick={() => removeFilter('maxPrice')} className="hover:text-yamboly-magenta font-bold">&times;</button>
+                      <span className="inline-flex items-center gap-1.5 bg-white shadow-sm border border-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-full font-medium">
+                        Hasta S/{filters.maxPrice} <button onClick={() => removeFilter('maxPrice')} className="text-slate-400 hover:text-red-500 transition-colors">&times;</button>
                       </span>
                     )}
                     {filters.inStock && (
-                      <span className="inline-flex items-center gap-1 bg-yamboly-cyan/10 text-yamboly-purple text-xs px-2 py-1 rounded-full">
-                        En stock <button onClick={() => removeFilter('inStock')} className="hover:text-yamboly-magenta font-bold">&times;</button>
+                      <span className="inline-flex items-center gap-1.5 bg-white shadow-sm border border-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-full font-medium">
+                        En stock <button onClick={() => removeFilter('inStock')} className="text-slate-400 hover:text-red-500 transition-colors">&times;</button>
                       </span>
                     )}
                     {filters.sabores.map((s) => (
-                      <span key={`sabor-${s}`} className="inline-flex items-center gap-1 bg-yamboly-cyan/10 text-yamboly-purple text-xs px-2 py-1 rounded-full">
-                        {s} <button onClick={() => removeFilter('sabores', s)} className="hover:text-yamboly-magenta font-bold">&times;</button>
+                      <span key={`sabor-${s}`} className="inline-flex items-center gap-1.5 bg-white shadow-sm border border-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-full font-medium">
+                        {s} <button onClick={() => removeFilter('sabores', s)} className="text-slate-400 hover:text-red-500 transition-colors">&times;</button>
                       </span>
                     ))}
                     {filters.search && (
-                      <span className="inline-flex items-center gap-1 bg-yamboly-cyan/10 text-yamboly-purple text-xs px-2 py-1 rounded-full">
-                        "{filters.search}" <button onClick={() => removeFilter('search')} className="hover:text-yamboly-magenta font-bold">&times;</button>
+                      <span className="inline-flex items-center gap-1.5 bg-white shadow-sm border border-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-full font-medium">
+                        "{filters.search}" <button onClick={() => removeFilter('search')} className="text-slate-400 hover:text-red-500 transition-colors">&times;</button>
                       </span>
                     )}
                   </div>
-                  <button onClick={clearFilters} className="text-xs text-yamboly-magenta font-bold hover:underline ml-auto">
-                    Limpiar todos
-                  </button>
                 </div>
               )}
 
-              <div className="flex justify-between items-center mb-4">
-                <p className="text-sm text-yamboly-purple/70 font-medium">
-                  {sortedProducts.length} productos encontrados
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+                <p className="text-sm text-slate-500 font-medium">
+                  Mostrando <strong className="text-slate-800">{sortedProducts.length}</strong> productos
                 </p>
-                <select
-                  value={filters.sort}
-                  onChange={(e) => updateURL({ ...filters, sort: e.target.value })}
-                  className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-yamboly-cyan text-yamboly-purple bg-white"
-                >
-                  <option value="created_at_desc">Relevancia</option>
-                  <option value="precio_venta_asc">Precio ↑</option>
-                  <option value="precio_venta_desc">Precio ↓</option>
-                  <option value="nombre_asc">A-Z</option>
-                </select>
+                <div className="flex items-center gap-3">
+                  <label className="text-sm text-slate-500 font-medium">Ordenar por:</label>
+                  <select
+                    value={filters.sort}
+                    onChange={(e) => updateURL({ ...filters, sort: e.target.value })}
+                    className="bg-white border border-slate-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yamboly-cyan text-slate-700 shadow-sm font-medium cursor-pointer"
+                  >
+                    <option value="created_at_desc">Novedades</option>
+                    <option value="precio_venta_asc">Precio: Menor a Mayor</option>
+                    <option value="precio_venta_desc">Precio: Mayor a Menor</option>
+                    <option value="nombre_asc">Nombre: A - Z</option>
+                  </select>
+                </div>
               </div>
 
               {sortedProducts.length === 0 ? (
-                <EmptyState title="No hay helados disponibles" message="Prueba con otra búsqueda o categoría" />
+                <EmptyState title="No encontramos lo que buscas" message="Intenta ajustar tus filtros o realiza una nueva búsqueda." />
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                   {sortedProducts.map((product) => {
                     const hasOffer = !!product.precio_oferta;
                     const activePrice = hasOffer ? product.precio_oferta : product.precio_venta;
                     const regularPrice = hasOffer ? product.precio_venta : null;
                     const safePrice = (val) => (val ?? 0).toFixed(2);
                     const inWishlist = isInWishlist(product.id);
-                    const badge = hasOffer ? 'Oferta' : product.id % 7 === 0 ? 'Más vendido' : product.id % 11 === 0 ? 'Nuevo' : null;
+                    const badge = hasOffer ? 'Descuento Especial' : product.id % 7 === 0 ? 'Los Favoritos' : product.id % 11 === 0 ? 'Lanzamiento' : null;
 
                     return (
-                      <div key={product.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group">
-                        <div>
-                          <Link to={`/product/${product.id}`} className="relative block overflow-hidden bg-gray-50">
-                            {badge && (
-                              <span className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-1 rounded-full uppercase z-10 shadow-sm ${
-                                badge === 'Oferta' ? 'bg-yamboly-magenta text-white' :
-                                badge === 'Más vendido' ? 'bg-yamboly-yellow text-yamboly-purple' :
-                                'bg-yamboly-cyan text-white'
+                      <div key={product.id} className="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col group overflow-visible relative">
+                        {/* Interactive Image Container */}
+                        <div className="relative pt-4 px-4 pb-0 z-10">
+                          {badge && (
+                            <div className="absolute top-6 left-6 z-20">
+                              <span className={`text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-md backdrop-blur-md ${
+                                badge === 'Descuento Especial' ? 'bg-yamboly-magenta/90 text-white' :
+                                badge === 'Los Favoritos' ? 'bg-yamboly-yellow/90 text-yamboly-purple' :
+                                'bg-yamboly-cyan/90 text-white'
                               }`}>
                                 {badge}
                               </span>
-                            )}
-                            <button
-                              onClick={(e) => { e.preventDefault(); toggleWishlist(product); }}
-                              className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-white transition-all"
-                            >
-                              <span className={inWishlist ? 'text-red-500' : 'text-gray-400'}>{inWishlist ? '❤️' : '🤍'}</span>
-                            </button>
+                            </div>
+                          )}
+                          
+                          <button
+                            onClick={(e) => { e.preventDefault(); toggleWishlist(product); }}
+                            className="absolute top-6 right-6 z-20 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-sm hover:shadow-md hover:scale-110 transition-all duration-300"
+                          >
+                            <span className={`text-lg ${inWishlist ? 'text-red-500 scale-110' : 'text-slate-300'} transition-transform`}>{inWishlist ? '❤️' : '🤍'}</span>
+                          </button>
+
+                          <Link to={`/product/${product.id}`} className="block relative h-56 rounded-[1.5rem] bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
+                            {/* Inner soft glow */}
+                            <div className="absolute inset-0 bg-white/20 group-hover:bg-white/0 transition-colors z-10"></div>
                             <img
-                              src={product.imagen_url || `https://picsum.photos/seed/${product.sku}/300/300`}
+                              src={product.imagen_url || `https://picsum.photos/seed/${product.sku}/400/400`}
                               alt={product.nombre}
-                              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                             />
                           </Link>
-                          <div className="p-4">
-                            <Link to={`/product/${product.id}`}>
-                              <h3 className="font-baloo text-lg font-bold text-yamboly-purple hover:text-yamboly-magenta truncate transition-colors">
-                                {product.nombre}
-                              </h3>
-                            </Link>
-                            <p className="text-xs text-yamboly-purpleLight truncate mb-3">{product.descripcion_corta}</p>
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-xl font-extrabold text-yamboly-purple">S/ {safePrice(activePrice)}</span>
+                        </div>
+
+                        {/* Content Container */}
+                        <div className="p-6 flex-1 flex flex-col pt-5">
+                          <Link to={`/product/${product.id}`} className="block mb-2">
+                            <h3 className="font-baloo text-xl font-bold text-slate-800 group-hover:text-yamboly-magenta transition-colors line-clamp-1">
+                              {product.nombre}
+                            </h3>
+                          </Link>
+                          <p className="text-sm text-slate-500 line-clamp-2 mb-4 leading-relaxed flex-1">
+                            {product.descripcion_corta}
+                          </p>
+                          
+                          <div className="mt-auto">
+                            <div className="flex items-end gap-3 mb-5">
+                              <span className="text-2xl font-extrabold text-slate-800 leading-none">
+                                <span className="text-sm text-slate-400 mr-1 font-semibold">S/</span>{safePrice(activePrice)}
+                              </span>
                               {regularPrice != null && (
-                                <span className="text-xs text-gray-400 line-through">S/ {safePrice(regularPrice)}</span>
+                                <span className="text-sm text-slate-400 line-through font-medium mb-0.5">S/ {safePrice(regularPrice)}</span>
                               )}
                             </div>
-                            <p className="text-[10px] text-gray-400 mt-1">* Precios incluyen IGV</p>
+                            
+                            <button
+                              onClick={() => handleAddToCart(product)}
+                              disabled={product.stock === 0}
+                              className={`relative w-full py-3.5 rounded-2xl font-bold text-sm tracking-wide overflow-hidden transition-all duration-300 group/btn ${
+                                product.stock === 0
+                                  ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                                  : 'bg-slate-800 text-white hover:shadow-lg hover:shadow-slate-800/20 hover:-translate-y-0.5 active:translate-y-0'
+                              }`}
+                            >
+                              {product.stock === 0 ? (
+                                'Agotado temporalmente'
+                              ) : (
+                                <>
+                                  <span className="relative z-10 flex items-center justify-center gap-2">
+                                    <span>Agregar al carrito</span>
+                                    <span className="group-hover/btn:translate-x-1 transition-transform">→</span>
+                                  </span>
+                                  <div className="absolute inset-0 bg-gradient-to-r from-yamboly-magenta to-yamboly-cyan opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 z-0"></div>
+                                </>
+                              )}
+                            </button>
                           </div>
-                        </div>
-                        <div className="px-4 pb-4">
-                          <button
-                            onClick={() => handleAddToCart(product)}
-                            disabled={product.stock === 0}
-                            className={`w-full py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all transform active:scale-95 ${
-                              product.stock === 0
-                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                : 'bg-yamboly-magenta text-white hover:bg-yamboly-magenta/90 hover:shadow-md'
-                            }`}
-                          >
-                            {product.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
-                          </button>
                         </div>
                       </div>
                     );
@@ -427,6 +486,38 @@ export const HomePage = () => {
       )}
 
       <Footer />
+      
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(-5%); }
+          50% { transform: translateY(5%); }
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 3s ease-in-out infinite;
+        }
+        @keyframes spin-slow {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 15s linear infinite;
+        }
+      `}} />
     </div>
   );
 };

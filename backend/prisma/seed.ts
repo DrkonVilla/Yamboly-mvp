@@ -1,4 +1,4 @@
-import { PrismaClient, Canal, EstadoOrden, Rol } from '@prisma/client';
+import { PrismaClient, Canal, EstadoOrden, Rol, EstadoCompra, TipoMovimientoStock } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -63,7 +63,7 @@ async function main() {
   console.log('🌱 Iniciando Seed...');
 
   // 1. Limpiar datos previos con TRUNCATE CASCADE para evitar problemas de FK
-  await prisma.$executeRawUnsafe(`TRUNCATE TABLE "ItemsOrden", "Orden", "ItemsCarrito", "Carrito", "Producto", "Categoria", "MovimientoStock", "ItemsOrdenCompra", "OrdenCompra", "Insumo", "Proveedor", "Usuario" RESTART IDENTITY CASCADE;`);
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE "ItemsOrden", "Orden", "ItemsCarrito", "Carrito", "Producto", "Categoria", "MovimientoStock", "MovimientoInsumo", "ItemsOrdenCompra", "OrdenCompra", "Insumo", "Proveedor", "Usuario" RESTART IDENTITY CASCADE;`);
 
   console.log('✅ Base de datos limpiada');
 
@@ -254,6 +254,127 @@ async function main() {
   }
 
   console.log(`✅ ${ordenesCreadas.length} órdenes creadas con canales: web=${30}, rappi=${10}, tottus=${5}, tambo=${5}`);
+
+  // 6. Crear Proveedor e Insumos
+  const proveedorUser = await prisma.usuario.create({
+    data: {
+      email: 'proveedor@yamboly.com',
+      nombre: 'Juan',
+      apellido: 'Proveedor',
+      contrasena_hash: await bcrypt.hash('Admin2026!', 10),
+      rol: 'proveedor'
+    }
+  });
+
+  const proveedor = await prisma.proveedor.create({
+    data: {
+      usuario_id: proveedorUser.id,
+      ruc: '10101010101',
+      nombre: 'Proveedor Yámboly',
+      contacto: 'Juan Proveedor',
+      telefono: '999888777',
+      email: 'ventas@proveedoryamboly.com',
+      direccion: 'Av. Industrial 123',
+    }
+  });
+
+  const insumosData = [
+    { nombre: 'Leche en polvo', precio_unit: 15.5, unidad_medida: 'kg' },
+    { nombre: 'Azúcar industrial', precio_unit: 3.2, unidad_medida: 'kg' },
+    { nombre: 'Saborizante Vainilla', precio_unit: 45.0, unidad_medida: 'litro' },
+    { nombre: 'Manteca de cacao', precio_unit: 25.0, unidad_medida: 'kg' },
+    { nombre: 'Palitos de madera', precio_unit: 0.05, unidad_medida: 'unidad' }
+  ];
+
+  const insumosCreados = [];
+  for (const ins of insumosData) {
+    const insumo = await prisma.insumo.create({
+      data: {
+        proveedor_id: proveedor.id,
+        nombre: ins.nombre,
+        precio_unit: ins.precio_unit,
+        unidad_medida: ins.unidad_medida,
+        stock_actual: Math.floor(Math.random() * 500) + 100,
+        stock_minimo: 50
+      }
+    });
+    insumosCreados.push(insumo);
+  }
+  console.log(`✅ 1 Proveedor y ${insumosCreados.length} Insumos creados`);
+
+  // 7. Crear 20 Órdenes de Compra
+  const ESTADOS_COMPRA: EstadoCompra[] = ['pendiente', 'aprobada', 'recibida', 'cancelada'];
+  const ordenesCompraCreadas = [];
+  for(let i = 0; i < 20; i++) {
+    const estado = ESTADOS_COMPRA[i % 4];
+    const fecha = randomDate(threeMonthsAgo, today);
+    const numItems = Math.floor(Math.random() * 3) + 1; // 1 a 3 insumos
+    
+    let subtotal = 0;
+    const itemsSeleccionados = [];
+    const shuffledInsumos = [...insumosCreados].sort(() => 0.5 - Math.random());
+    for (let j = 0; j < numItems && j < shuffledInsumos.length; j++) {
+      const ins = shuffledInsumos[j];
+      const cantidad = Math.floor(Math.random() * 50) + 10;
+      const subtotalItem = cantidad * ins.precio_unit;
+      itemsSeleccionados.push({
+        insumo_id: ins.id,
+        cantidad,
+        precio_unitario: ins.precio_unit,
+        subtotal: subtotalItem
+      });
+      subtotal += subtotalItem;
+    }
+    
+    const impuestos = subtotal * 0.18;
+    const total = subtotal + impuestos;
+
+    const ordenCompra = await prisma.ordenCompra.create({
+      data: {
+        proveedor_id: proveedor.id,
+        usuario_id: admin.id,
+        estado: estado,
+        subtotal: parseFloat(subtotal.toFixed(2)),
+        impuestos: parseFloat(impuestos.toFixed(2)),
+        total: parseFloat(total.toFixed(2)),
+        fecha_entrega: estado === 'recibida' ? fecha : null,
+        created_at: fecha,
+        updated_at: fecha,
+        items: {
+          create: itemsSeleccionados
+        }
+      }
+    });
+    ordenesCompraCreadas.push(ordenCompra);
+  }
+  console.log(`✅ ${ordenesCompraCreadas.length} Órdenes de compra creadas`);
+
+  // 8. Crear 50 Movimientos de Stock
+  const TIPOS_MOVIMIENTO: TipoMovimientoStock[] = ['entrada_compra', 'salida_venta', 'ajuste_manual'];
+  const movimientosCreados = [];
+  for(let i = 0; i < 50; i++) {
+    const producto = getRandomItem(productosCreados);
+    const tipo = getRandomItem(TIPOS_MOVIMIENTO);
+    const cantidad = Math.floor(Math.random() * 30) + 5;
+    
+    // Solo para historial, no afectamos el stock actual del producto que ya está bien
+    const stockAnterior = Math.floor(Math.random() * 100);
+    const stockNuevo = tipo === 'salida_venta' ? stockAnterior - cantidad : stockAnterior + cantidad;
+
+    const mov = await prisma.movimientoStock.create({
+      data: {
+        producto_id: producto.id,
+        tipo: tipo,
+        cantidad: cantidad,
+        stock_anterior: stockAnterior,
+        stock_nuevo: Math.max(0, stockNuevo),
+        usuario_id: admin.id,
+        created_at: randomDate(threeMonthsAgo, today)
+      }
+    });
+    movimientosCreados.push(mov);
+  }
+  console.log(`✅ ${movimientosCreados.length} Movimientos de stock creados`);
 
   // Estadística final
   const countOrders = await prisma.orden.count();

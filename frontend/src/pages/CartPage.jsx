@@ -14,7 +14,7 @@ const ShippingProgressBar = ({ total }) => {
     <div className="mb-4 p-3 rounded-xl bg-gray-50 border border-gray-100">
       <div className="flex justify-between text-xs mb-2">
         <span className={isFree ? 'text-green-700 font-semibold' : 'text-yamboly-purple/70'}>
-          {isFree ? '✅ ¡Envío gratis desbloqueado!' : `¡Te faltan S/ ${Number.isFinite(remaining) ? remaining.toFixed(2) : '0.00'} para envío gratis!`}
+          {isFree ? '✅ ¡Estás ahorrando S/ 15.00 en envío!' : `¡Te faltan S/ ${Number.isFinite(remaining) ? remaining.toFixed(2) : '0.00'} para envío gratis!`}
         </span>
         <span className="font-bold text-yamboly-purple">{Number.isNaN(percentage) ? '0' : percentage.toFixed(0)}%</span>
       </div>
@@ -76,18 +76,23 @@ export const CartPage = () => {
                   <p className="text-sm font-extrabold text-yamboly-purple mt-1">S/ {((item.precio_unitario ?? 0)).toFixed(2)}</p>
                 </div>
                 
-                <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                <div className="flex items-center gap-4 mt-2 sm:mt-0">
+                  <div className="text-right">
+                    <p className="text-xs text-yamboly-purpleLight">Subtotal</p>
+                    <p className="font-bold text-yamboly-purple">S/ {((item.precio_unitario ?? 0) * item.cantidad).toFixed(2)}</p>
+                  </div>
+                  
                   <div className="flex items-center border border-yamboly-purpleLight/30 rounded-xl overflow-hidden bg-white shadow-sm">
                     <button
                       onClick={() => updateQuantity(index, Math.max(1, item.cantidad - 1))}
-                      className="px-3 py-1 hover:bg-yamboly-cyanLight/10 font-bold transition-colors border-r text-yamboly-purple"
+                      className="px-3 py-1 hover:bg-yamboly-cyanLight/10 font-bold transition-all transform active:scale-90 border-r text-yamboly-purple"
                     >
                       -
                     </button>
                     <span className="px-3 py-1 w-10 text-center text-xs font-semibold text-yamboly-purple">{item.cantidad}</span>
                     <button
                       onClick={() => updateQuantity(index, item.cantidad + 1)}
-                      className="px-3 py-1 hover:bg-yamboly-cyanLight/10 font-bold transition-colors border-l text-yamboly-purple"
+                      className="px-3 py-1 hover:bg-yamboly-cyanLight/10 font-bold transition-all transform active:scale-90 border-l text-yamboly-purple"
                     >
                       +
                     </button>
