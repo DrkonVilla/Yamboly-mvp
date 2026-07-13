@@ -200,18 +200,18 @@ export const AdminSuppliers = () => {
                         <div className="flex justify-center items-center gap-2">
                           <button
                             onClick={() => openEdit(s)}
-                            className="p-1.5 text-yamboly-cyan hover:bg-yamboly-cyan/10 rounded-lg transition-all"
+                            className="p-2 text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all"
                             title="Editar Proveedor"
                           >
-                            <PencilIcon className="h-4.5 w-4.5 stroke-[2.2]" />
+                            <PencilIcon className="h-5 w-5 stroke-2" />
                           </button>
                           {s.activo && (
                             <button
                               onClick={() => handleDelete(s)}
-                              className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                              className="p-2 text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-all"
                               title="Desactivar Proveedor"
                             >
-                              <TrashIcon className="h-4.5 w-4.5 stroke-[2.2]" />
+                              <TrashIcon className="h-5 w-5 stroke-2" />
                             </button>
                           )}
                         </div>

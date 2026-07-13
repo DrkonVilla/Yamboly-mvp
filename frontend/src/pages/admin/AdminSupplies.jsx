@@ -277,24 +277,24 @@ export const AdminSupplies = () => {
                           <div className="flex justify-center items-center gap-2">
                             <button
                               onClick={() => openStockAdjustment(s)}
-                              className="p-1.5 text-yamboly-cyan hover:bg-yamboly-cyan/10 rounded-lg transition-all"
+                              className="p-2 text-cyan-700 bg-cyan-50 hover:bg-cyan-100 rounded-lg transition-all"
                               title="Ajustar Stock"
                             >
-                              <ArrowPathIcon className="h-4.5 w-4.5 stroke-[2.2]" />
+                              <ArrowPathIcon className="h-5 w-5 stroke-2" />
                             </button>
                             <button
                               onClick={() => openEdit(s)}
-                              className="p-1.5 text-yamboly-purpleLight hover:bg-yamboly-purple/10 rounded-lg transition-all"
+                              className="p-2 text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all"
                               title="Editar Insumo"
                             >
-                              <PencilIcon className="h-4.5 w-4.5 stroke-[2.2]" />
+                              <PencilIcon className="h-5 w-5 stroke-2" />
                             </button>
                             <button
                               onClick={() => handleDelete(s.id)}
-                              className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                              className="p-2 text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-all"
                               title="Eliminar Insumo"
                             >
-                              <TrashIcon className="h-4.5 w-4.5 stroke-[2.2]" />
+                              <TrashIcon className="h-5 w-5 stroke-2" />
                             </button>
                           </div>
                         </td>

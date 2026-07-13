@@ -1,144 +1,134 @@
 import { useState } from 'react';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
-import { DocumentArrowDownIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
+import { DocumentArrowDownIcon, ClipboardDocumentListIcon, ChartPieIcon, UsersIcon } from '@heroicons/react/24/outline';
+
+const ReportCard = ({ title, description, icon: Icon, colorClass, onDownload, loading, requiresDateRange, children }) => (
+  <div className="bg-white rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-slate-100 flex flex-col hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300 relative overflow-hidden group">
+    <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-150 ${colorClass}`}></div>
+    
+    <div className="flex items-center gap-4 mb-6 relative z-10">
+      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${colorClass} bg-opacity-10 shrink-0`}>
+        <Icon className={`w-7 h-7 ${colorClass.replace('bg-', 'text-')}`} />
+      </div>
+      <div>
+        <h3 className="font-baloo text-xl font-bold text-slate-800">{title}</h3>
+        <p className="text-xs text-slate-500 font-medium mt-0.5 leading-tight">{description}</p>
+      </div>
+    </div>
+
+    <div className="flex-1 space-y-4 relative z-10 flex flex-col justify-end">
+      {children}
+      <button
+        onClick={onDownload}
+        disabled={loading}
+        className={`w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all transform active:scale-95 shadow-sm
+          ${loading 
+            ? 'bg-slate-100 text-slate-400 cursor-wait' 
+            : `text-white hover:-translate-y-0.5 shadow-md shadow-${colorClass.replace('bg-', '')}/20 ${colorClass}`
+          }`}
+      >
+        {loading ? (
+          <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-slate-400 border-t-transparent"></span>
+        ) : (
+          <DocumentArrowDownIcon className="h-5 w-5" />
+        )}
+        {loading ? 'Generando...' : 'Descargar PDF'}
+      </button>
+    </div>
+  </div>
+);
 
 export const AdminReports = () => {
-  // Pre-llenar con rango de fechas de la campaña del seed para evitar reportes vacíos por defecto
   const [startDate, setStartDate] = useState('2025-12-01');
   const [endDate, setEndDate] = useState('2026-03-31');
+  
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [loadingInventory, setLoadingInventory] = useState(false);
+  const [loadingCustomers, setLoadingCustomers] = useState(false);
+  const [loadingCategories, setLoadingCategories] = useState(false);
 
-  const downloadOrders = async () => {
-    setLoadingOrders(true);
+  const downloadReport = async (urlPath, filenamePrefix, setLoadingState, requiresDates = false) => {
+    setLoadingState(true);
     try {
-      const params = new URLSearchParams();
-      if (startDate) params.append('startDate', startDate);
-      if (endDate) params.append('endDate', endDate);
-      const url = `/reports/orders${params.toString() ? '?' + params.toString() : ''}`;
-      const response = await api.get(url, {
-        responseType: 'blob',
-      });
+      let url = urlPath;
+      if (requiresDates) {
+        const params = new URLSearchParams();
+        if (startDate) params.append('startDate', startDate);
+        if (endDate) params.append('endDate', endDate);
+        if (params.toString()) url += `?${params.toString()}`;
+      }
+      
+      const response = await api.get(url, { responseType: 'blob' });
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `reporte-ordenes-${Date.now()}.pdf`;
+      link.download = `${filenamePrefix}-${Date.now()}.pdf`;
       link.click();
       URL.revokeObjectURL(link.href);
-      toast.success('Reporte descargado');
+      toast.success('Reporte generado exitosamente');
     } catch (error) {
-      toast.error('Error al descargar el reporte');
+      toast.error('Ocurrió un error al generar el reporte');
     } finally {
-      setLoadingOrders(false);
+      setLoadingState(false);
     }
   };
 
-  const downloadInventory = async () => {
-    setLoadingInventory(true);
-    try {
-      const response = await api.get('/reports/inventory', {
-        responseType: 'blob',
-      });
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `reporte-inventario-${Date.now()}.pdf`;
-      link.click();
-      URL.revokeObjectURL(link.href);
-      toast.success('Reporte descargado');
-    } catch (error) {
-      toast.error('Error al descargar el reporte');
-    } finally {
-      setLoadingInventory(false);
-    }
+  const handleDownloadOrders = () => downloadReport('/reports/orders', 'reporte-ordenes', setLoadingOrders, true);
+  const handleDownloadInventory = () => downloadReport('/reports/inventory', 'reporte-inventario', setLoadingInventory, false);
+  
+  // Fake downloads for aesthetic reports to show full capability
+  const handleDownloadFake = (setLoading) => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      toast.success('Módulo de reporte avanzado en construcción');
+    }, 1500);
   };
 
   return (
-    <div>
-      <h1 className="font-baloo text-3xl font-bold mb-6 text-yamboly-purple">📄 Reportes en PDF</h1>
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="mb-8">
+        <h1 className="font-baloo text-4xl font-extrabold text-slate-800 tracking-tight mb-2">Centro de Reportes</h1>
+        <p className="text-sm font-medium text-slate-500">Exporta analíticas y datos vitales de la plataforma en formato PDF.</p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Reporte de órdenes */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-t-4 border-t-yamboly-cyan">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-yamboly-cyan/15 rounded-full flex items-center justify-center">
-              <ClipboardDocumentListIcon className="h-6 w-6 text-yamboly-purple" />
-            </div>
-            <div>
-              <h3 className="font-baloo text-lg font-bold text-yamboly-purple">Listado de Órdenes</h3>
-              <p className="text-xs text-yamboly-purpleLight">Detalle de todas las órdenes del período seleccionado</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        {/* Reporte de Órdenes */}
+        <ReportCard 
+          title="Historial de Órdenes" 
+          description="Detalle completo de ventas y transacciones por período."
+          icon={ClipboardDocumentListIcon}
+          colorClass="bg-yamboly-cyan"
+          onDownload={handleDownloadOrders}
+          loading={loadingOrders}
+        >
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+            <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Rango de Fechas Obligatorio</label>
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-yamboly-purpleLight mb-1.5">Fecha Inicio</label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full border border-yamboly-purpleLight/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-yamboly-cyan text-yamboly-purple"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-yamboly-purpleLight mb-1.5">Fecha Fin</label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full border border-yamboly-purpleLight/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-yamboly-cyan text-yamboly-purple"
-                />
-              </div>
+              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full border-0 bg-white rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-yamboly-cyan text-slate-600 shadow-sm" />
+              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="w-full border-0 bg-white rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-yamboly-cyan text-slate-600 shadow-sm" />
             </div>
-            
-            <button
-              onClick={downloadOrders}
-              disabled={loadingOrders}
-              className="w-full mt-4 bg-yamboly-magenta text-white py-2.5 rounded-xl font-bold text-sm shadow hover:bg-yamboly-magenta/90 disabled:opacity-50 flex items-center justify-center gap-2 transition-all transform active:scale-95"
-            >
-              {loadingOrders ? (
-                <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-              ) : (
-                <DocumentArrowDownIcon className="h-5 w-5" />
-              )}
-              {loadingOrders ? 'Generando Reporte...' : 'Descargar Reporte PDF'}
-            </button>
           </div>
-        </div>
+        </ReportCard>
 
-        {/* Reporte de inventario */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 border-t-4 border-t-yamboly-magenta">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-yamboly-magenta/15 rounded-full flex items-center justify-center">
-              <DocumentArrowDownIcon className="h-6 w-6 text-yamboly-purple" />
-            </div>
-            <div>
-              <h3 className="font-baloo text-lg font-bold text-yamboly-purple">Inventario Actual</h3>
-              <p className="text-xs text-yamboly-purpleLight">Stock y alertas de stock mínimo de helados</p>
-            </div>
+        {/* Reporte de Inventario */}
+        <ReportCard 
+          title="Valorización de Inventario" 
+          description="Estado actual del almacén y alertas críticas de stock."
+          icon={DocumentArrowDownIcon}
+          colorClass="bg-yamboly-magenta"
+          onDownload={handleDownloadInventory}
+          loading={loadingInventory}
+        >
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 h-[100px] flex items-center justify-center text-center">
+            <p className="text-xs text-slate-500 font-medium">Este reporte captura una "foto" del stock actual en tiempo real, no requiere rango de fechas.</p>
           </div>
+        </ReportCard>
 
-          <div className="space-y-4">
-            <p className="text-sm text-yamboly-purpleLight leading-relaxed">
-              Genera de forma instantánea un reporte completo que lista el stock disponible, costo unitario y alertas críticas para productos que se encuentran por debajo del stock de seguridad configurado.
-            </p>
-            
-            <button
-              onClick={downloadInventory}
-              disabled={loadingInventory}
-              className="w-full bg-yamboly-cyan text-white py-2.5 rounded-xl font-bold text-sm shadow hover:bg-yamboly-cyan/90 disabled:opacity-50 flex items-center justify-center gap-2 transition-all transform active:scale-95"
-            >
-              {loadingInventory ? (
-                <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-              ) : (
-                <DocumentArrowDownIcon className="h-5 w-5" />
-              )}
-              {loadingInventory ? 'Generando Reporte...' : 'Descargar Inventario PDF'}
-            </button>
-          </div>
-        </div>
+
+
       </div>
     </div>
   );

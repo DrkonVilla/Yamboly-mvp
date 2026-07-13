@@ -25,7 +25,7 @@ import { AdminPurchaseOrders } from './pages/admin/AdminPurchaseOrders';
 import { AdminStock } from './pages/admin/AdminStock';
 import { AdminSuppliers } from './pages/admin/AdminSuppliers';
 import { AdminSupplies } from './pages/admin/AdminSupplies';
-
+import { AdminCategories } from './pages/admin/AdminCategories';
 import { ProviderDashboard } from './pages/provider/ProviderDashboard';
 import { ProviderOrders } from './pages/provider/ProviderOrders';
 function ProtectedRoute({ children }) {
@@ -78,6 +78,7 @@ function App() {
             <Route path="stock" element={<AdminStock />} />
             <Route path="suppliers" element={<AdminSuppliers />} />
             <Route path="supplies" element={<AdminSupplies />} />
+            <Route path="categories" element={<AdminCategories />} />
           </Route>
           
           <Route path="/provider" element={<AdminLayout />}>
