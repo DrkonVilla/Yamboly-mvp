@@ -139,6 +139,11 @@ export const OrderConfirmation = () => {
           <OrderTimeline estado={order.estado} />
           <ColdChainIndicator estado={order.estado} />
 
+          {/* Aviso de email — decorativo, siempre visible */}
+          <p className="text-xs text-gray-400 mt-3 mb-1">
+            📧 Te hemos enviado un correo de confirmación a tu email registrado.
+          </p>
+
           <div className="w-full max-w-md bg-gray-50 border border-gray-100 rounded-xl p-5 mb-8 text-left space-y-2">
             <div className="flex justify-between text-xs text-yamboly-purpleLight">
               <span>Nro. de Pedido:</span>

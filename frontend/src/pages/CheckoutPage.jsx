@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/authStore';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { CreditCard3D } from '../components/CreditCard3D';
+import { enviarConfirmacionCompra } from '../utils/emailService';
 
 const safePrice = (val) => (val ?? 0).toFixed(2);
 
@@ -113,6 +114,8 @@ export const CheckoutPage = () => {
       const response = await api.post('/orders', payload);
       if (response.data.success) {
         toast.success('¡Pago exitoso!');
+        // Fire-and-forget: no await — nunca bloquea la navegación
+        enviarConfirmacionCompra(response.data.data, user);
         clearCart();
         navigate(`/order-confirmation/${response.data.data.id}`);
       }
@@ -159,6 +162,8 @@ export const CheckoutPage = () => {
         };
         api.post('/orders', payload).then((res) => {
           if (res.data.success) {
+            // Fire-and-forget email
+            enviarConfirmacionCompra(res.data.data, user);
             clearCart();
             navigate(`/order-confirmation/${res.data.data.id}`);
           }
@@ -387,6 +392,7 @@ export const CheckoutPage = () => {
                           };
                           api.post('/orders', payload).then((res) => {
                             if (res.data.success) {
+                              enviarConfirmacionCompra(res.data.data, user);
                               clearCart();
                               navigate(`/order-confirmation/${res.data.data.id}`);
                             }
