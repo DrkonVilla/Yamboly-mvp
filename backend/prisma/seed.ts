@@ -62,21 +62,8 @@ function getRandomItem<T>(arr: T[]): T {
 async function main() {
   console.log('🌱 Iniciando Seed...');
 
-  // 1. Limpiar datos previos (en orden inverso por dependencias)
-  await prisma.itemsOrden.deleteMany({});
-  await prisma.orden.deleteMany({});
-  await prisma.itemsCarrito.deleteMany({});
-  await prisma.carrito.deleteMany({});
-  await prisma.producto.deleteMany({});
-  await prisma.categoria.deleteMany({});
-  
-  await prisma.movimientoStock.deleteMany({});
-  await prisma.itemsOrdenCompra.deleteMany({});
-  await prisma.ordenCompra.deleteMany({});
-  await prisma.insumo.deleteMany({});
-  await prisma.proveedor.deleteMany({});
-
-  await prisma.usuario.deleteMany({});
+  // 1. Limpiar datos previos con TRUNCATE CASCADE para evitar problemas de FK
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE "ItemsOrden", "Orden", "ItemsCarrito", "Carrito", "Producto", "Categoria", "MovimientoStock", "ItemsOrdenCompra", "OrdenCompra", "Insumo", "Proveedor", "Usuario" RESTART IDENTITY CASCADE;`);
 
   console.log('✅ Base de datos limpiada');
 
