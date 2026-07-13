@@ -13,6 +13,8 @@ datasource db {
 enum Rol {
   admin
   cliente
+  ejecutivo
+  proveedor
 }
 
 enum EstadoOrden {
@@ -136,4 +138,85 @@ model ItemsOrden {
   // Relaciones
   orden           Orden    @relation(fields: [orden_id], references: [id])
   producto        Producto @relation(fields: [producto_id], references: [id])
+}
+
+enum EstadoCompra {
+  solicitado
+  aprobado
+  recibido
+  cancelado
+}
+
+model Proveedor {
+  id          Int          @id @default(autoincrement())
+  ruc         String       @unique
+  nombre      String
+  contacto    String
+  telefono    String
+  email       String
+  direccion   String
+  activo      Boolean      @default(true)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+
+  // Relaciones
+  insumos     Insumo[]
+  compras     OrdenCompra[]
+}
+
+model Insumo {
+  id             Int                 @id @default(autoincrement())
+  proveedor_id   Int
+  nombre         String
+  descripcion    String?
+  unidad_medida  String
+  precio_unit    Float
+  stock_actual   Float               @default(0)
+  stock_minimo   Float               @default(0)
+  activo         Boolean             @default(true)
+  created_at     DateTime            @default(now())
+  updated_at     DateTime            @updatedAt
+
+  // Relaciones
+  proveedor      Proveedor           @relation(fields: [proveedor_id], references: [id])
+  items_compra   ItemsOrdenCompra[]
+  movimientos    MovimientoStock[]
+}
+
+model OrdenCompra {
+  id              Int                 @id @default(autoincrement())
+  proveedor_id    Int
+  fecha           DateTime            @default(now())
+  estado          EstadoCompra        @default(solicitado)
+  total           Float
+  created_at      DateTime            @default(now())
+  updated_at      DateTime            @updatedAt
+
+  // Relaciones
+  proveedor       Proveedor           @relation(fields: [proveedor_id], references: [id])
+  items           ItemsOrdenCompra[]
+}
+
+model ItemsOrdenCompra {
+  id              Int                 @id @default(autoincrement())
+  orden_compra_id Int
+  insumo_id       Int
+  cantidad        Float
+  precio_unit     Float
+
+  // Relaciones
+  orden_compra    OrdenCompra         @relation(fields: [orden_compra_id], references: [id])
+  insumo          Insumo              @relation(fields: [insumo_id], references: [id])
+}
+
+model MovimientoStock {
+  id              Int                 @id @default(autoincrement())
+  insumo_id       Int
+  tipo            String
+  cantidad        Float
+  motivo          String?
+  created_at      DateTime            @default(now())
+
+  // Relaciones
+  insumo          Insumo              @relation(fields: [insumo_id], references: [id])
 }

@@ -69,6 +69,13 @@ async function main() {
   await prisma.carrito.deleteMany({});
   await prisma.producto.deleteMany({});
   await prisma.categoria.deleteMany({});
+  
+  await prisma.movimientoStock.deleteMany({});
+  await prisma.itemsOrdenCompra.deleteMany({});
+  await prisma.ordenCompra.deleteMany({});
+  await prisma.insumo.deleteMany({});
+  await prisma.proveedor.deleteMany({});
+
   await prisma.usuario.deleteMany({});
 
   console.log('✅ Base de datos limpiada');
@@ -106,6 +113,59 @@ async function main() {
     productosCreados.push(producto);
   }
   console.log(`✅ ${productosCreados.length} productos creados`);
+
+  // 4b. Crear Proveedores e Insumos
+  const PROVEEDORES_DATA = [
+    { ruc: '20100234567', nombre: 'Gloria S.A.', contacto: 'Juan Depaz', telefono: '01 4756382', email: 'ventas@gloria.com.pe', direccion: 'Av. República de Panamá 2461, Lima' },
+    { ruc: '20234567891', nombre: 'D\'Onofrio Corp.', contacto: 'María Romero', telefono: '01 3546721', email: 'contacto@donofrio.pe', direccion: 'Av. Venezuela 2580, Lima' },
+    { ruc: '20495837261', nombre: 'Frutos del Campo SAC', contacto: 'Carlos Loli', telefono: '987 654 321', email: 'ventas@frutoscampo.com', direccion: 'Jr. Ica 456, Huaral' },
+    { ruc: '20584736291', nombre: 'Envases Plásticos del Sur', contacto: 'Rosa Medina', telefono: '01 4453928', email: 'rmedina@envasesur.com', direccion: 'Av. Industrial 123, Villa El Salvador' },
+    { ruc: '20603948576', nombre: 'Azucarera Laredo', contacto: 'Humberto Solis', telefono: '044 435271', email: 'azucar@laredo.com.pe', direccion: 'Carretera Laredo Km 10, Trujillo' },
+  ];
+
+  const proveedoresCreados = [];
+  for (const prov of PROVEEDORES_DATA) {
+    const p = await prisma.proveedor.create({ data: prov });
+    proveedoresCreados.push(p);
+  }
+  console.log(`✅ ${proveedoresCreados.length} proveedores creados`);
+
+  const INSUMOS_DATA = [
+    { proveedorIdx: 0, nombre: 'Leche Condensada', descripcion: 'Lata de leche condensada de 390g', unidad_medida: 'Latas', precio_unit: 4.20, stock_actual: 150.0, stock_minimo: 30.0 },
+    { proveedorIdx: 0, nombre: 'Crema de Leche', descripcion: 'Crema para batir Gloria', unidad_medida: 'Litros', precio_unit: 12.50, stock_actual: 80.0, stock_minimo: 20.0 },
+    { proveedorIdx: 0, nombre: 'Leche Evaporada', descripcion: 'Leche evaporada entera', unidad_medida: 'Latas', precio_unit: 3.80, stock_actual: 200.0, stock_minimo: 40.0 },
+    { proveedorIdx: 1, nombre: 'Base de Helado Vainilla', descripcion: 'Mezcla base sabor vainilla', unidad_medida: 'Galones', precio_unit: 25.00, stock_actual: 10.0, stock_minimo: 15.0 },
+    { proveedorIdx: 1, nombre: 'Chispas de Chocolate', descripcion: 'Chispas de chocolate semi amargo', unidad_medida: 'Kg', precio_unit: 18.50, stock_actual: 25.0, stock_minimo: 5.0 },
+    { proveedorIdx: 1, nombre: 'Cobertura de Chocolate', descripcion: 'Chocolate para bañar bombones', unidad_medida: 'Kg', precio_unit: 22.00, stock_actual: 30.0, stock_minimo: 10.0 },
+    { proveedorIdx: 2, nombre: 'Pulpa de Maracuyá', descripcion: 'Pulpa de fruta natural congelada', unidad_medida: 'Kg', precio_unit: 15.00, stock_actual: 40.0, stock_minimo: 10.0 },
+    { proveedorIdx: 2, nombre: 'Fresa Congelada', descripcion: 'Fresa entera seleccionada', unidad_medida: 'Kg', precio_unit: 9.50, stock_actual: 50.0, stock_minimo: 15.0 },
+    { proveedorIdx: 2, nombre: 'Pulpa de Lúcuma', descripcion: 'Lúcuma de seda madura licuada', unidad_medida: 'Kg', precio_unit: 28.00, stock_actual: 30.0, stock_minimo: 8.0 },
+    { proveedorIdx: 3, nombre: 'Vasos Plásticos 4oz', descripcion: 'Vasos descartables para helado personal', unidad_medida: 'Millares', precio_unit: 55.00, stock_actual: 3.0, stock_minimo: 5.0 },
+    { proveedorIdx: 3, nombre: 'Cucharas de Plástico', descripcion: 'Cucharas pequeñas de colores', unidad_medida: 'Millares', precio_unit: 22.00, stock_actual: 8.0, stock_minimo: 3.0 },
+    { proveedorIdx: 3, nombre: 'Tapas Transparentes', descripcion: 'Tapas para pote familiar 1L', unidad_medida: 'Millares', precio_unit: 45.00, stock_actual: 2.0, stock_minimo: 4.0 },
+    { proveedorIdx: 3, nombre: 'Potes de 1 Litro', descripcion: 'Envase familiar con logo', unidad_medida: 'Unidades', precio_unit: 0.85, stock_actual: 500.0, stock_minimo: 100.0 },
+    { proveedorIdx: 4, nombre: 'Azúcar Blanca Refinada', descripcion: 'Sacos de azúcar de 50kg', unidad_medida: 'Sacos', precio_unit: 140.00, stock_actual: 12.0, stock_minimo: 3.0 },
+    { proveedorIdx: 4, nombre: 'Azúcar Rubia', descripcion: 'Sacos de azúcar rubia de 50kg', unidad_medida: 'Sacos', precio_unit: 130.00, stock_actual: 5.0, stock_minimo: 2.0 },
+  ];
+
+  let insumosCreadosCount = 0;
+  for (const ins of INSUMOS_DATA) {
+    const prov = proveedoresCreados[ins.proveedorIdx];
+    await prisma.insumo.create({
+      data: {
+        proveedor_id: prov.id,
+        nombre: ins.nombre,
+        descripcion: ins.descripcion,
+        unidad_medida: ins.unidad_medida,
+        precio_unit: ins.precio_unit,
+        stock_actual: ins.stock_actual,
+        stock_minimo: ins.stock_minimo,
+        activo: true,
+      },
+    });
+    insumosCreadosCount++;
+  }
+  console.log(`✅ ${insumosCreadosCount} insumos creados`);
 
   // 4. Crear Usuarios: 1 Admin + 4 Clientes
   const adminPassword = await bcrypt.hash('Admin2026!', 10);

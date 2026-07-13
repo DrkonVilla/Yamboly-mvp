@@ -2,19 +2,22 @@ import { useEffect } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import {
-  HomeIcon,
   ShoppingBagIcon,
   ClipboardDocumentListIcon,
   ChartBarIcon,
   ArrowRightOnRectangleIcon,
+  BuildingOffice2Icon,
+  CubeIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
-import { DocumentTextIcon } from '@heroicons/react/24/outline';
 
 const menuItems = [
-  { path: '/admin', label: 'Dashboard', icon: ChartBarIcon },
-  { path: '/admin/products', label: 'Productos', icon: ShoppingBagIcon },
-  { path: '/admin/orders', label: 'Órdenes', icon: ClipboardDocumentListIcon },
-  { path: '/admin/reports', label: 'Reportes', icon: DocumentTextIcon },
+  { path: '/admin', label: 'Dashboard', icon: ChartBarIcon, roles: ['admin'] },
+  { path: '/admin/products', label: 'Productos', icon: ShoppingBagIcon, roles: ['admin', 'ejecutivo'] },
+  { path: '/admin/orders', label: 'Órdenes', icon: ClipboardDocumentListIcon, roles: ['admin'] },
+  { path: '/admin/reports', label: 'Reportes', icon: DocumentTextIcon, roles: ['admin'] },
+  { path: '/admin/suppliers', label: 'Proveedores', icon: BuildingOffice2Icon, roles: ['admin', 'ejecutivo'] },
+  { path: '/admin/supplies', label: 'Insumos', icon: CubeIcon, roles: ['admin', 'ejecutivo'] },
 ];
 
 export const AdminLayout = () => {
@@ -22,7 +25,7 @@ export const AdminLayout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || user.rol !== 'admin') {
+    if (!user || (user.rol !== 'admin' && user.rol !== 'ejecutivo')) {
       navigate('/login');
     }
   }, [user, navigate]);
@@ -32,7 +35,7 @@ export const AdminLayout = () => {
     navigate('/login');
   };
 
-  if (!user || user.rol !== 'admin') {
+  if (!user || (user.rol !== 'admin' && user.rol !== 'ejecutivo')) {
     return null;
   }
 
@@ -46,16 +49,18 @@ export const AdminLayout = () => {
         </div>
 
         <nav className="flex-1 p-4 space-y-1">
-          {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-yamboly-cyanLight/10 text-gray-600 hover:text-yamboly-purple font-medium transition-colors"
-            >
-              <item.icon className="h-5 w-5 text-yamboly-purpleLight" />
-              <span>{item.label}</span>
-            </Link>
-          ))}
+          {menuItems
+            .filter((item) => item.roles.includes(user.rol))
+            .map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-yamboly-cyanLight/10 text-gray-600 hover:text-yamboly-purple font-medium transition-colors"
+              >
+                <item.icon className="h-5 w-5 text-yamboly-purpleLight" />
+                <span>{item.label}</span>
+              </Link>
+            ))}
         </nav>
 
         <div className="p-4 border-t">
@@ -65,7 +70,7 @@ export const AdminLayout = () => {
             </div>
             <div>
               <p className="text-sm font-medium">{user?.nombre} {user?.apellido}</p>
-              <p className="text-xs text-gray-500">{user?.email}</p>
+              <p className="text-xs text-gray-500 capitalize">{user?.rol}</p>
             </div>
           </div>
           <button

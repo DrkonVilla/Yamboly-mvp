@@ -9,6 +9,8 @@ import orderRoutes from './routes/order.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import reportRoutes from './routes/report.routes';
 import { prisma } from './config/db';
+import supplierRoutes from './routes/supplier.routes';
+import supplyRoutes from './routes/supply.routes';
 
 const app = express();
 
@@ -24,6 +26,8 @@ app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/reports', reportRoutes);
+app.use('/api/v1/suppliers', supplierRoutes);
+app.use('/api/v1/supplies', supplyRoutes);
 
 // Health check
 app.get('/api/v1/health', async (req, res) => {

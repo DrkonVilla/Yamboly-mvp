@@ -21,6 +21,8 @@ import { DashboardPage } from './pages/admin/DashboardPage';
 import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminReports } from './pages/admin/AdminReports';
+import { AdminSuppliers } from './pages/admin/AdminSuppliers';
+import { AdminSupplies } from './pages/admin/AdminSupplies';
 
 
 function ProtectedRoute({ children }) {
@@ -69,6 +71,8 @@ function App() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="reports" element={<AdminReports />} />
+            <Route path="suppliers" element={<AdminSuppliers />} />
+            <Route path="supplies" element={<AdminSupplies />} />
           </Route>
         </Routes>
       </main>
