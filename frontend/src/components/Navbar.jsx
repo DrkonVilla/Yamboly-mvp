@@ -31,6 +31,9 @@ export const Navbar = () => {
           <Link to="/" className="text-yamboly-purple hover:text-yamboly-magenta font-semibold transition-colors flex items-center gap-1">
             <HomeIcon className="h-5 w-5 text-yamboly-purpleLight" /> Tienda
           </Link>
+          <Link to="/nosotros" className="text-yamboly-purple hover:text-yamboly-magenta font-semibold transition-colors">
+            Nosotros
+          </Link>
           {user?.rol === 'admin' && (
             <Link to="/admin" className="text-yamboly-purple hover:text-yamboly-magenta font-semibold transition-colors">
               Panel Admin

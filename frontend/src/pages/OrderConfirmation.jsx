@@ -139,6 +139,17 @@ export const OrderConfirmation = () => {
               <span>Método de Pago:</span>
               <span className="font-bold text-yamboly-purple capitalize">{order.metodo_pago}</span>
             </div>
+            <div className="flex justify-between text-xs text-yamboly-purpleLight">
+              <span>Canal de Venta:</span>
+              <span className="font-bold text-yamboly-purple">
+                {order.canal === 'web' && 'Pedido registrado vía Web 🌐'}
+                {order.canal === 'rappi' && 'Pedido registrado vía Rappi 🛵'}
+                {order.canal === 'tottus' && 'Pedido registrado vía Tottus 🏪'}
+                {order.canal === 'tambo' && 'Pedido registrado vía Tambo 🏪'}
+                {order.canal === 'tiktok' && 'Pedido registrado vía TikTok 🎵'}
+                {!['web', 'rappi', 'tottus', 'tambo', 'tiktok'].includes(order.canal) && `Pedido registrado vía ${order.canal}`}
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">

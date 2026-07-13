@@ -14,6 +14,7 @@ import { CheckoutPage } from './pages/CheckoutPage';
 import { OrderConfirmation } from './pages/OrderConfirmation';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { AboutPage } from './pages/AboutPage';
 
 import { AdminLayout } from './components/AdminLayout';
 import { DashboardPage } from './pages/admin/DashboardPage';
@@ -46,6 +47,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/nosotros" element={<AboutPage />} />
           <Route
             path="/checkout"
             element={

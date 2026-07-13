@@ -16,8 +16,11 @@ import {
   Line,
 } from 'recharts';
 import { useAuthStore } from '../../stores/authStore';
+import toast from 'react-hot-toast';
 
 const COLORS = ['#29B6E8', '#E6007E', '#FFD400', '#4B2E83', '#7B5EA7'];
+
+let toastsShown = false;
 
 export const DashboardPage = () => {
   const { token } = useAuthStore();
@@ -25,6 +28,20 @@ export const DashboardPage = () => {
   const [startDate, setStartDate] = useState('2025-12-01');
   const [endDate, setEndDate] = useState('2026-03-31');
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (toastsShown) return;
+    toastsShown = true;
+    const notifications = [
+      { delay: 1500, msg: '🔔 Nuevo pedido recibido desde Rappi', type: 'success' },
+      { delay: 4000, msg: '⚠️ Stock bajo: Chocobombom (3 unidades)', type: 'error' },
+      { delay: 7000, msg: '📦 Pedido #24 marcado como entregado', type: 'success' },
+    ];
+    const timers = notifications.map(n => 
+      setTimeout(() => n.type === 'error' ? toast.error(n.msg) : toast.success(n.msg), n.delay)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   useEffect(() => {
     const fetchStats = async () => {

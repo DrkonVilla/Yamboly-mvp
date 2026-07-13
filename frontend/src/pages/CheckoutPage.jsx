@@ -59,6 +59,7 @@ export const CheckoutPage = () => {
   const total = getTotal();
 
   const [step, setStep] = useState(1);
+  const [canalDemo, setCanalDemo] = useState('web');
   const [formData, setFormData] = useState({
     direccion: '',
     ciudad: 'Lima',
@@ -107,7 +108,7 @@ export const CheckoutPage = () => {
         items: getCartItemsForApi(),
         direccion_envio: `${formData.direccion}, ${formData.ciudad}, ${formData.departamento}`,
         metodo_pago: formData.metodo_pago,
-        canal: 'web',
+        canal: canalDemo,
       };
       const response = await api.post('/orders', payload);
       if (response.data.success) {
@@ -154,7 +155,7 @@ export const CheckoutPage = () => {
           items: getCartItemsForApi(),
           direccion_envio: `${formData.direccion}, ${formData.ciudad}, ${formData.departamento}`,
           metodo_pago: 'paypal',
-          canal: 'web',
+          canal: canalDemo,
         };
         api.post('/orders', payload).then((res) => {
           if (res.data.success) {
@@ -246,6 +247,25 @@ export const CheckoutPage = () => {
                     placeholder="999 999 999"
                   />
                 </div>
+                
+                <div className="p-3.5 border-2 border-dashed border-yamboly-cyan/50 rounded-xl bg-yamboly-cyanLight/5 mt-4">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <span className="text-sm">🎭</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-yamboly-cyan">Canal de venta (modo demo)</span>
+                  </div>
+                  <select
+                    value={canalDemo}
+                    onChange={(e) => setCanalDemo(e.target.value)}
+                    className="w-full border border-yamboly-cyan/30 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-yamboly-cyan text-yamboly-purple bg-white font-semibold"
+                  >
+                    <option value="web">🌐 Web (E-commerce oficial)</option>
+                    <option value="rappi">🛵 Rappi (Delivery rápido)</option>
+                    <option value="tottus">🏪 Tottus (Supermercado)</option>
+                    <option value="tambo">🏪 Tambo (Tienda de conveniencia)</option>
+                    <option value="tiktok">🎵 TikTok Shop (Venta directa)</option>
+                  </select>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => {

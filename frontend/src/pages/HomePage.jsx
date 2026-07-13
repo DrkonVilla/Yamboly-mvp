@@ -10,6 +10,34 @@ import { WaveDivider } from '../components/WaveDivider';
 import { Footer } from '../components/Footer';
 import toast from 'react-hot-toast';
 
+const CountUp = ({ end, duration = 2000, prefix = '', suffix = '' }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const endVal = parseInt(end, 10);
+    if (isNaN(endVal)) return;
+    if (start === endVal) return;
+
+    const totalMiliseconds = duration;
+    const incrementTime = Math.max(Math.floor(totalMiliseconds / endVal), 20);
+
+    const timer = setInterval(() => {
+      start += Math.ceil(endVal / (totalMiliseconds / incrementTime));
+      if (start >= endVal) {
+        clearInterval(timer);
+        setCount(endVal);
+      } else {
+        setCount(start);
+      }
+    }, incrementTime);
+
+    return () => clearInterval(timer);
+  }, [end, duration]);
+
+  return <span>{prefix}{count}{suffix}</span>;
+};
+
 const SORT_MAP = {
   created_at_desc: { sort: 'created_at', order: 'desc' },
   precio_venta_asc: { sort: 'precio_venta', order: 'asc' },
@@ -175,6 +203,36 @@ export const HomePage = () => {
             </div>
           </div>
           <WaveDivider fill="fill-[#FAF9F6]" className="absolute bottom-0 left-0 w-full" />
+        </div>
+
+        {/* Franja de Estadísticas Animadas */}
+        <div className="bg-white py-10 border-b border-gray-100 shadow-sm relative z-20 mt-[-10px]">
+          <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:shadow-sm transition-all">
+              <p className="text-3xl md:text-4xl font-extrabold text-yamboly-magenta">
+                <CountUp end={500} suffix="+" />
+              </p>
+              <p className="text-xs font-bold text-yamboly-purple uppercase tracking-wider mt-2">Pedidos Entregados</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:shadow-sm transition-all">
+              <p className="text-3xl md:text-4xl font-extrabold text-yamboly-magenta">
+                <CountUp end={7} />
+              </p>
+              <p className="text-xs font-bold text-yamboly-purple uppercase tracking-wider mt-2">Ciudades con Cobertura</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:shadow-sm transition-all">
+              <p className="text-3xl md:text-4xl font-extrabold text-yamboly-magenta">
+                <CountUp end={20} suffix="+" />
+              </p>
+              <p className="text-xs font-bold text-yamboly-purple uppercase tracking-wider mt-2">Sabores Disponibles</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:shadow-sm transition-all">
+              <p className="text-3xl md:text-4xl font-extrabold text-yamboly-magenta">
+                <CountUp end={15} suffix=" años" />
+              </p>
+              <p className="text-xs font-bold text-yamboly-purple uppercase tracking-wider mt-2">Trayectoria de Calidad</p>
+            </div>
+          </div>
         </div>
 
         <div id="catalogo" className="container mx-auto px-4 py-8">

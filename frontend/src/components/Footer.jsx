@@ -3,6 +3,26 @@ import { Link } from 'react-router-dom';
 export const Footer = () => {
   return (
     <footer className="bg-yamboly-purple text-white pt-12 pb-6 mt-16">
+      {/* Badges de Confianza */}
+      <div className="container mx-auto px-4 mb-10 border-b border-white/10 pb-8">
+        <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-4 md:overflow-x-visible md:pb-0">
+          {[
+            { icon: '🇵🇪', text: 'Helados 100% Peruanos' },
+            { icon: '🔒', text: 'Compra 100% Segura SSL' },
+            { icon: '✅', text: 'Inocuidad Certificada (HACCP)' },
+            { icon: '🚚', text: 'Distribución en 7 Ciudades' },
+          ].map((b, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 bg-white/10 border border-white/5 p-3.5 rounded-xl shrink-0 min-w-[240px] md:min-w-0 transition-transform duration-300 hover:scale-[1.03] shadow-sm"
+            >
+              <span className="text-2xl select-none">{b.icon}</span>
+              <span className="text-xs font-extrabold tracking-wide text-white/90 leading-tight">{b.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
         {/* Columna 1: Logo & Eslogan */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
