@@ -11,9 +11,8 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
+COPY entrypoint.js .
 
 EXPOSE 3000
 
-CMD ["/bin/sh", "entrypoint.sh"]
+CMD ["node", "entrypoint.js"]
