@@ -13,6 +13,8 @@ import stockRoutes from './routes/stock.routes';
 import { prisma } from './config/db';
 import supplierRoutes from './routes/supplier.routes';
 import supplyRoutes from './routes/supply.routes';
+import userRoutes from './routes/user.routes';
+import configRoutes from './routes/config.routes';
 
 const app = express();
 
@@ -32,6 +34,8 @@ app.use('/api/v1/purchase-orders', purchaseOrderRoutes);
 app.use('/api/v1/stock', stockRoutes);
 app.use('/api/v1/suppliers', supplierRoutes);
 app.use('/api/v1/supplies', supplyRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/config', configRoutes);
 
 // Health check
 app.get('/api/v1/health', async (req, res) => {

@@ -14,6 +14,7 @@ import {
   TruckIcon,
   ArchiveBoxIcon,
   TagIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
 
 const adminMenuItems = [
@@ -26,8 +27,8 @@ const adminMenuItems = [
   { path: '/admin/reports', label: 'Reportes y Analíticas', icon: DocumentTextIcon, roles: ['admin'] },
   { path: '/admin/suppliers', label: 'Directorio Proveedores', icon: BuildingOffice2Icon, roles: ['admin', 'ejecutivo'] },
   { path: '/admin/supplies', label: 'Insumos / Materias', icon: CubeIcon, roles: ['admin', 'ejecutivo'] },
-  { path: '/admin/customers', label: 'Clientes (CRM)', icon: UsersIcon, roles: ['admin'], disabled: true },
-  { path: '/admin/settings', label: 'Configuración', icon: Cog6ToothIcon, roles: ['admin'], disabled: true },
+  { path: '/admin/customers', label: 'Clientes (CRM)', icon: UsersIcon, roles: ['admin'] },
+  { path: '/admin/settings', label: 'Ajustes Globales', icon: WrenchScrewdriverIcon, roles: ['admin'] },
 ];
 
 const providerMenuItems = [

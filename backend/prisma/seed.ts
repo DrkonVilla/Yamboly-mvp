@@ -397,6 +397,23 @@ async function main() {
   // Estadística final
   const countOrders = await prisma.orden.count();
   console.log(`📊 Total de órdenes en BD: ${countOrders}`);
+  // Configuraciones iniciales
+  const configuraciones = [
+    { clave: 'TAX_RATE', valor: '18', descripcion: 'Impuesto IGV (%)' },
+    { clave: 'DELIVERY_COST', valor: '10.00', descripcion: 'Costo de envío estándar (S/)' },
+    { clave: 'CONTACT_PHONE', valor: '+51 999 888 777', descripcion: 'Teléfono de contacto' },
+    { clave: 'CONTACT_EMAIL', valor: 'ventas@yamboly.com', descripcion: 'Correo electrónico de contacto' },
+  ];
+
+  for (const conf of configuraciones) {
+    await prisma.configuracion.upsert({
+      where: { clave: conf.clave },
+      update: {},
+      create: conf
+    });
+  }
+  console.log('✅ Configuraciones iniciales creadas');
+
   console.log('🎉 Seed completado exitosamente!');
 }
 

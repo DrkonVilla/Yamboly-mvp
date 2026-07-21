@@ -255,3 +255,11 @@ model MovimientoInsumo {
   // Relaciones
   insumo          Insumo              @relation(fields: [insumo_id], references: [id])
 }
+
+model Configuracion {
+  id          Int      @id @default(autoincrement())
+  clave       String   @unique
+  valor       String
+  descripcion String?
+  updated_at  DateTime @updatedAt
+}
